@@ -1,27 +1,26 @@
 package com.example.aqua_care.Navigation
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.core.splashscreen.SplashScreen
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,7 +29,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.aqua_care.Data.navbarComponents
 import com.example.aqua_care.Screens.*
-import com.example.aqua_care.ViewModel.DataStoreViewModel
+import com.google.android.gms.auth.api.identity.Identity
+import kotlinx.coroutines.launch
+
 
 sealed class navScreen(val route: String) {
     object landingPage_1 : navScreen("landingPage_1")
@@ -62,9 +63,9 @@ sealed class navScreen(val route: String) {
 @Composable
 fun Navigation(
     modifier: Modifier = Modifier,
-    context: Context,
-    viewModel: DataStoreViewModel
+    context: Context
 ){
+
     val navController = rememberNavController()
 
     Scaffold(
@@ -96,8 +97,7 @@ fun Navigation(
                 signupPage(navController = navController)
             }
             composable(route = navScreen.loginPage.route) {
-                loginpage(navController = navController,
-                    viewModel = viewModel)
+                loginpage(navController = navController)
             }
 
             composable(route = navScreen.homePage.route) {
@@ -113,8 +113,7 @@ fun Navigation(
                 chatbotPage()
             }
             composable(route = navScreen.profilePage.route) {
-                profilePage(navController = navController,
-                    viewModel = viewModel)
+                profilePage(navController = navController)
             }
             composable(route = navScreen.aquaModul.route) {
                 aquaModul(navController = navController)

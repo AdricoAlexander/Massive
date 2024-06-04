@@ -65,7 +65,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.aqua_care.DataStore.UserPreferences
-import com.example.aqua_care.ViewModel.DataStoreViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -82,7 +81,8 @@ fun opensanstext(
     size : TextUnit,
     fontFamily : FontFamily,
     onItemclicked : (() -> Unit)? ,
-    color : Color
+    color : Color,
+    modifier : Modifier = Modifier
 ){
     Text(
         text = text,
@@ -132,7 +132,7 @@ fun aquatextfield(
     font : FontFamily,
     fontSize : TextUnit,
     text : String,
-    onChange : (String) -> Unit
+    onChange : (String) -> Unit,
 ) {
 
     OutlinedTextField(
@@ -1315,7 +1315,6 @@ fun myBottomSheet(
     sheetState: SheetState,
     onDismiss : () -> Unit,
     navController: NavController,
-    viewModel: DataStoreViewModel
 ){
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -1376,7 +1375,7 @@ fun myBottomSheet(
                             fontFamily = opensansbold
                         ) {
                             coroutineScope.launch {
-                                viewModel.logout()
+                                dataStore.clearStatus()
                             }
                             navController.navigate(navScreen.loginPage.route){
                                 popUpTo(navScreen.Splash.route){

@@ -1,6 +1,8 @@
 package com.example.aqua_care.Screens
 
+import android.util.Log
 import android.widget.Space
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,9 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,10 +31,12 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.aqua_care.Data.aquaButton
@@ -40,10 +47,25 @@ import com.example.aqua_care.Data.opensansregular
 import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
+import com.example.aqua_care.ViewModel.FirebaseViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun signupPage(modifier: Modifier = Modifier, navController: NavController) {
-    var text by remember { mutableStateOf("") }
+fun signupPage(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    viewModel: FirebaseViewModel = hiltViewModel()
+
+) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val state = viewModel.state.collectAsState(initial = null)
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var termsAccepted by remember { mutableStateOf(false) }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -132,9 +154,9 @@ fun signupPage(modifier: Modifier = Modifier, navController: NavController) {
                         imageSize = 16.81.dp,
                         font = opensansregular,
                         fontSize = 12.sp,
-                        text = text,
+                        text = name,
                         onChange = {
-                            text = it
+                            name = it
                         }
                     )
                     Spacer(
@@ -155,9 +177,9 @@ fun signupPage(modifier: Modifier = Modifier, navController: NavController) {
                         imageSize = 16.81.dp,
                         font = opensansregular,
                         fontSize = 12.sp,
-                        text = text,
+                        text = email,
                         onChange = {
-                            text = it
+                            email = it
                         }
                     )
                     Spacer(
@@ -178,9 +200,9 @@ fun signupPage(modifier: Modifier = Modifier, navController: NavController) {
                         imageSize = 16.81.dp,
                         font = opensansregular,
                         fontSize = 12.sp,
-                        text = text,
+                        text = password,
                         onChange = {
-                            text = it
+                            password = it
                         }
                     )
                     Spacer(
@@ -201,9 +223,9 @@ fun signupPage(modifier: Modifier = Modifier, navController: NavController) {
                         imageSize = 16.81.dp,
                         font = opensansregular,
                         fontSize = 12.sp,
-                        text = text,
+                        text = confirmPassword,
                         onChange = {
-                            text = it
+                            confirmPassword = it
                         }
                     )
                 }
@@ -212,8 +234,10 @@ fun signupPage(modifier: Modifier = Modifier, navController: NavController) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Checkbox(
-                        checked = false,
-                        onCheckedChange = null,
+                        checked = termsAccepted,
+                        onCheckedChange = {
+                                          termsAccepted = it
+                        },
                         modifier = modifier
                             .scale(0.5f)
                     )
@@ -236,7 +260,32 @@ fun signupPage(modifier: Modifier = Modifier, navController: NavController) {
                     fontFamily = opensansbold,
                     textColor = Color.White
                 ) {
-                    navController.navigate(navScreen.loginPage.route)
+                    coroutineScope.launch {
+                        when {
+                            email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> {
+                                Toast.makeText(context, "Email dan Password tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                            }
+                            password.length < 7 -> {
+                                    Toast.makeText(context, "Password minimal 7 huruf", Toast.LENGTH_SHORT).show()
+                            }
+                            password != confirmPassword -> {
+                                Toast.makeText(context, "Password dan Konfirmasi Password tidak cocok", Toast.LENGTH_SHORT).show()
+                            }
+                            !termsAccepted -> {
+                                Toast.makeText(context, "Anda harus menyetujui syarat dan ketentuan", Toast.LENGTH_SHORT).show()
+                            }
+                            else ->{
+                                viewModel.registerUser(email, password){
+                                    Log.d("Berhasil", email)
+                                }
+                                name = ""
+                                email = ""
+                                password = ""
+                                confirmPassword = ""
+                                Toast.makeText(context, "Akun Berhasil Dibuat", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 }
                 Spacer(
                     modifier.height(10.dp)

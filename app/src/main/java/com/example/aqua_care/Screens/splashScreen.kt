@@ -9,33 +9,40 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.aqua_care.DataStore.UserPreferences
-import com.example.aqua_care.MainViewModelFactory
 import com.example.aqua_care.Navigation.navScreen
-import com.example.aqua_care.ViewModel.DataStoreViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun splashScreen(modifier: Modifier = Modifier, navController: NavController){
     val context = LocalContext.current
-    val userPreferences = UserPreferences(context)
-    val viewModelFactory = MainViewModelFactory(userPreferences)
-    val viewModel:  DataStoreViewModel = viewModel(factory = viewModelFactory)
-    val isLoggedIn by viewModel.isLoggedIn.collectAsState()
+    val dataStore = UserPreferences(context)
+    val getStatusLoggedIn = dataStore.getStatusLogin.collectAsState(initial = false)
+    val isFirstTimeLaunch = dataStore.getFirstLaunch.collectAsState(initial = true)
     LaunchedEffect(
         key1 = true,
         block = {
-            if (isLoggedIn){
-                navController.navigate(navScreen.homePage.route){
-                    popUpTo(navScreen.Splash.route){
+            delay(2000L)
+            if (isFirstTimeLaunch.value) {
+                navController.navigate(navScreen.landingPage_1.route) {
+                    popUpTo(navScreen.Splash.route) {
                         inclusive = true
                     }
                 }
-            }else{
-                navController.navigate(navScreen.loginPage.route){
-                    popUpTo(navScreen.Splash.route){
+                dataStore.setFirstTimeLaunch(false)
+            } else if (getStatusLoggedIn.value) {
+                navController.navigate(navScreen.homePage.route) {
+                    popUpTo(navScreen.Splash.route) {
+                        inclusive = true
+                    }
+                }
+            } else {
+                navController.navigate(navScreen.loginPage.route) {
+                    popUpTo(navScreen.Splash.route) {
                         inclusive = true
                     }
                 }

@@ -36,15 +36,13 @@ import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.Data.profileCard
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
-import com.example.aqua_care.ViewModel.DataStoreViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun profilePage(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    viewModel: DataStoreViewModel
+    navController: NavController
 ){
     val  scope = rememberCoroutineScope()
     var isBottomSheetVisible by rememberSaveable { mutableStateOf(false) }
@@ -212,7 +210,6 @@ fun profilePage(
         sheetState = sheetState,
         onDismiss = { scope.launch { sheetState.hide()}.invokeOnCompletion { isBottomSheetVisible = false }
         },
-        navController = navController,
-        viewModel = viewModel
+        navController = navController
     )
 }

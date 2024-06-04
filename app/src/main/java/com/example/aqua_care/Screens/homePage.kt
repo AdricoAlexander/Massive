@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,12 +33,15 @@ import com.example.aqua_care.Data.opensansextrabold
 import com.example.aqua_care.Data.opensanslight
 import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.Navigation.navScreen
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun homePage(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
+    val currentUser = FirebaseAuth.getInstance().currentUser?.email?.substringBefore("@") ?: "N/A"
     Column(
         modifier
             .fillMaxSize()

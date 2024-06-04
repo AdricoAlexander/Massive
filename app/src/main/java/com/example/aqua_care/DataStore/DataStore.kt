@@ -2,31 +2,37 @@ package com.example.aqua_care.DataStore
 
 import android.content.Context
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.aqua_care.DataStore.preferencesKey.FIRST_TIME_LAUNCH_KEY
+import com.example.aqua_care.DataStore.preferencesKey.STATUS_LOGIN_KEY
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-private val Context.dataStore by preferencesDataStore(name = "statusLogin")
 
-class UserPreferences(context: Context) {
-
-    private val dataStore = context.dataStore
+class UserPreferences(private val context: Context) {
 
     companion object {
-        val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("StatusLogin")
     }
 
-    val isLoggedIn: Flow<Boolean> = dataStore.data
-        .map { preferences ->
-            Log.d("DataStore", "Fetching login status")
-            preferences[IS_LOGGED_IN] ?: false
-        }
+    val getStatusLogin: Flow<Boolean> = context.dataStore.data.map {preferences ->
+        preferences[STATUS_LOGIN_KEY] ?: false
+    }
+    val getFirstLaunch: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[FIRST_TIME_LAUNCH_KEY] ?: true
+    }
+    suspend fun saveStatus(isLogin : Boolean) = context.dataStore.edit { preferences ->
+        preferences[STATUS_LOGIN_KEY] = isLogin
+    }
 
-    suspend fun setLoggedIn(isLoggedIn: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[IS_LOGGED_IN] = isLoggedIn
-        }
+    suspend fun clearStatus() = context.dataStore.edit { preferences ->
+        preferences.remove(STATUS_LOGIN_KEY)
+    }
+    suspend fun setFirstTimeLaunch(isFirstTime : Boolean) = context.dataStore.edit { preferences ->
+        preferences[FIRST_TIME_LAUNCH_KEY] = isFirstTime
     }
 }

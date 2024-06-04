@@ -2,8 +2,8 @@ package com.example.aqua_care.Screens
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.aqua_care.Data.aquaButton
 import com.example.aqua_care.Data.aquatextfield
@@ -22,26 +23,29 @@ import com.example.aqua_care.DataStore.SharedPreferencesManager
 import com.example.aqua_care.DataStore.UserPreferences
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
-import com.example.aqua_care.ViewModel.DataStoreViewModel
+import com.example.aqua_care.ViewModel.FirebaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun loginpage(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: DataStoreViewModel
+    viewModel: FirebaseViewModel = hiltViewModel()
 ){
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val state = viewModel.state.collectAsState(initial = null)
     val dataStore = UserPreferences(context)
     val sharedPreferencesManager = remember { SharedPreferencesManager(context) }
-    var name by remember {
+    var email by remember {
         mutableStateOf("")
     }
     var password by remember {
         mutableStateOf("")
     }
-    val scope = rememberCoroutineScope()
+
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -130,9 +134,9 @@ fun loginpage(
                         imageSize = 16.81.dp,
                         font = opensansregular,
                         fontSize = 12.sp,
-                        text = name,
+                        text = email,
                         onChange = {
-                            name = it
+                            email = it
                         }
                     )
                     Spacer(
@@ -185,18 +189,33 @@ fun loginpage(
                     fontFamily = opensansbold,
                     textColor = Color.White
                 ) {
-                    if (name.isBlank() || password.isBlank()){
-                        Toast.makeText(context, "Nama Dan Password Wajib Diisi", Toast.LENGTH_SHORT).show()
-                    }else {
-                        sharedPreferencesManager.name = name
-                        sharedPreferencesManager.password = password
-                        scope.launch {
-                            viewModel.login()
-                            navController.navigate(navScreen.homePage.route) {
-                                popUpTo(navScreen.Splash.route) {
-                                    inclusive = true
-                        }
-
+                    coroutineScope.launch {
+                        if (email.isBlank() || password.isBlank()) {
+                            Toast.makeText(
+                                context,
+                                "Nama Dan Password Wajib Diisi",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            viewModel.loginUser(email, password) {
+                                if (it) {
+                                    coroutineScope.launch {
+                                        dataStore.saveStatus(true)
+                                        sharedPreferencesManager.name = email
+                                        sharedPreferencesManager.password = password
+                                    }
+                                    navController.navigate(navScreen.homePage.route) {
+                                        popUpTo(navScreen.Splash.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Email atau pasword salah",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         }
                     }
@@ -217,6 +236,9 @@ fun loginpage(
                 Image(
                     painter = painterResource(id = R.drawable.icon_google),
                     contentDescription = null,
+                    modifier
+                        .clickable {
+                        }
                 )
                 Spacer(
                     modifier.height(10.dp)
