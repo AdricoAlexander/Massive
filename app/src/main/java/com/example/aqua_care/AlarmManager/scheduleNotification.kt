@@ -12,7 +12,6 @@ import com.example.aqua_care.AlarmManager.NotificationKeys.RMNDR_NOTI_ID
 import com.example.aqua_care.AlarmManager.NotificationKeys.RMNDR_NOTI_TITLE_KEY
 import java.util.Calendar
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 fun scheduleNotification(
     context: Context,
@@ -27,7 +26,7 @@ fun scheduleNotification(
         context.applicationContext,
         RMNDR_NOTI_ID,
         intent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -48,7 +47,7 @@ fun scheduleNotification(
         pendingIntent
     )
 
-    Toast.makeText(context, "Alarm berhasil diatur", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, "Alarm successfully set", Toast.LENGTH_SHORT).show()
 }
 
 fun cancelNotification(context: Context) {
@@ -57,10 +56,10 @@ fun cancelNotification(context: Context) {
         context.applicationContext,
         RMNDR_NOTI_ID,
         intent,
-        PendingIntent.FLAG_MUTABLE
+        PendingIntent.FLAG_IMMUTABLE
     )
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     alarmManager.cancel(pendingIntent)
-    Toast.makeText(context, "Alarm berhasil dibatalkan", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, "Alarm successfully cancelled", Toast.LENGTH_SHORT).show()
 }

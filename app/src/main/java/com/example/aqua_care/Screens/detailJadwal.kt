@@ -1,47 +1,19 @@
 package com.example.aqua_care.Screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
-import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberTimePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -53,34 +25,34 @@ import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.DataStore.SharedPreferencesManager
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
-import java.util.Calendar
+import java.util.*
 
 @Composable
 fun detailJadwal(
     modifier: Modifier = Modifier,
     navController: NavController,
-    isFeedEnabled  : Boolean
-){
+    isFeedEnabled: Boolean
+) {
     var checked by remember { mutableStateOf(false) }
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         modifier = modifier
             .fillMaxSize()
-    ){
+    ) {
         Box(
             contentAlignment = Alignment.BottomStart,
             modifier = modifier
                 .fillMaxWidth()
                 .height(67.dp)
-        ){
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = modifier
                     .fillMaxWidth(0.7f)
                     .padding(14.dp)
-            ){
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_backarrow),
                     contentDescription = null,
@@ -94,42 +66,41 @@ fun detailJadwal(
                     text = "Pemberian Pakan",
                     size = 18.sp,
                     fontFamily = opensansbold,
-                    onItemclicked = {  },
+                    onItemclicked = {},
                     color = Color(0xFF272727)
                 )
             }
         }
         Image(
-            painter = painterResource(id = R.drawable.topline) ,
+            painter = painterResource(id = R.drawable.topline),
             contentDescription = null,
         )
-        Spacer(modifier.height(31.dp)
-        )
+        Spacer(modifier.height(31.dp))
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
                 .fillMaxSize()
                 .padding(20.dp)
-        ){
+        ) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F6F6)),
                 shape = RoundedCornerShape(10.dp),
                 modifier = modifier
                     .size(323.dp, 46.dp)
-            ){
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = modifier
                         .fillMaxSize()
                         .padding(10.dp)
-                ){
+                ) {
                     opensanstext(
                         text = "Aktifkan Pengingat",
                         size = 12.sp,
                         fontFamily = opensansbold,
-                        onItemclicked = {  },
+                        onItemclicked = {},
                         color = Color(0xFF272727)
                     )
                     Switch(
@@ -148,9 +119,8 @@ fun detailJadwal(
                     )
                 }
             }
-            Spacer(modifier.height(31.dp)
-            )
-            if (checked == true){
+            Spacer(modifier.height(31.dp))
+            if (checked) {
                 ifchecked(viewModel = ScheduleViewModel())
             }
         }
@@ -161,15 +131,13 @@ fun detailJadwal(
 @Composable
 fun ifchecked(
     modifier: Modifier = Modifier,
-    viewModel: ScheduleViewModel,
-
-
-    ){
+    viewModel: ScheduleViewModel
+) {
     var checked by remember { mutableStateOf(viewModel.isFeedEnabled) }
-    var checked2  by remember { mutableStateOf(false) }
+    var checked2 by remember { mutableStateOf(false) }
 
-    var scheduleDate by remember { mutableStateOf("")}
-    var scheduleTime by remember { mutableStateOf("")}
+    var scheduleDate by remember { mutableStateOf("") }
+    var scheduleTime by remember { mutableStateOf("") }
 
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -185,41 +153,40 @@ fun ifchecked(
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
-    ){
+    ) {
         opensanstext(
             text = "Tipe Notifikasi",
             size = 12.sp,
             fontFamily = opensansregular,
-            onItemclicked = {  },
+            onItemclicked = {},
             color = Color(0xFF272727)
         )
-        Spacer(modifier.height(11.dp)
-        )
+        Spacer(modifier.height(11.dp))
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
                 .fillMaxWidth()
-        ){
+        ) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F6F6)),
                 shape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp),
                 modifier = modifier
                     .size(317.dp, 48.dp)
-            ){
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = modifier
                         .fillMaxSize()
-                        .padding(5.dp,)
-                ){
+                        .padding(5.dp)
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = modifier
                             .width(127.dp)
-                    ){
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.lonceng_icon),
                             contentDescription = null,
@@ -229,29 +196,29 @@ fun ifchecked(
                         Column(
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally,
-                        ){
+                        ) {
                             opensanstext(
                                 text = "Notifikasi",
                                 size = 14.sp,
                                 fontFamily = opensansregular,
-                                onItemclicked = {  },
+                                onItemclicked = {},
                                 color = Color(0xFF272727)
                             )
                             opensanstext(
-                                text = if(checked == true){
+                                text = if (checked) {
                                     "ON"
                                 } else {
                                     "OFF"
                                 },
                                 size = 10.sp,
                                 fontFamily = opensansregular,
-                                onItemclicked = {  },
+                                onItemclicked = {},
                                 color = Color(0xFF3C3C3C)
                             )
                         }
                     }
                     Switch(
-                        checked = checked ,
+                        checked = checked,
                         onCheckedChange = {
                             checked = it
                         },
@@ -270,20 +237,20 @@ fun ifchecked(
                 shape = RoundedCornerShape(bottomEnd = 10.dp, bottomStart = 10.dp),
                 modifier = modifier
                     .size(317.dp, 48.dp)
-            ){
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = modifier
                         .fillMaxSize()
-                        .padding(5.dp,)
-                ){
+                        .padding(5.dp)
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = modifier
                             .width(127.dp)
-                    ){
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.lonceng_icon),
                             contentDescription = null,
@@ -293,23 +260,23 @@ fun ifchecked(
                         Column(
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally,
-                        ){
+                        ) {
                             opensanstext(
                                 text = "Alarm",
                                 size = 14.sp,
                                 fontFamily = opensansregular,
-                                onItemclicked = {  },
+                                onItemclicked = {},
                                 color = Color(0xFF272727)
                             )
                             opensanstext(
-                                text = if(checked2 == true){
+                                text = if (checked2) {
                                     "ON"
                                 } else {
                                     "OFF"
                                 },
                                 size = 10.sp,
                                 fontFamily = opensansregular,
-                                onItemclicked = {  },
+                                onItemclicked = {},
                                 color = Color(0xFF3C3C3C)
                             )
                         }
@@ -338,7 +305,7 @@ fun ifchecked(
             text = "Atur Alarm dan Tanggal",
             size = 12.sp,
             fontFamily = opensansregular,
-            onItemclicked = { },
+            onItemclicked = {},
             color = Color(0xFF272727)
         )
         Card(
@@ -405,9 +372,9 @@ fun ifchecked(
         }
     }
     Spacer(modifier.height(10.dp))
-    Column( horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Button(onClick = {
+            Log.d("Alarm", "Scheduling notification for time: ${scheduleTime} and date: ${scheduleDate}")
             scheduleNotification(
                 context = context,
                 timePickerState = timePickerState,
@@ -448,8 +415,7 @@ fun ifchecked(
                         }
                         TextButton(onClick = {
                             val selectedDate = Calendar.getInstance().apply { timeInMillis = datePickerState.selectedDateMillis!! }
-                            scheduleDate = "${selectedDate.get(Calendar.DAY_OF_MONTH)}/${selectedDate.get(
-                                Calendar.MONTH) + 1}/${selectedDate.get(Calendar.YEAR)}"
+                            scheduleDate = "${selectedDate.get(Calendar.DAY_OF_MONTH)}/${selectedDate.get(Calendar.MONTH) + 1}/${selectedDate.get(Calendar.YEAR)}"
                             showDatePicker = false
                         }) {
                             Text("OK")
@@ -491,4 +457,3 @@ fun ifchecked(
         }
     }
 }
-

@@ -36,6 +36,7 @@
         </activity>
         <receiver
             android:name=".AlarmManager.ReminderReceiver"
-            android:enabled="true" />
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 </manifest>

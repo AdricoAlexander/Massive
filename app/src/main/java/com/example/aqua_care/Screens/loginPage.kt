@@ -1,6 +1,8 @@
 package com.example.aqua_care.Screens
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,6 +26,10 @@ import com.example.aqua_care.DataStore.UserPreferences
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
 import com.example.aqua_care.ViewModel.FirebaseViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
@@ -44,7 +50,22 @@ fun loginpage(
     var password by remember {
         mutableStateOf("")
     }
-
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+        val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try {
+            val result = account.getResult(ApiException::class.java)
+            val credential = GoogleAuthProvider.getCredential(result.idToken, null)
+            viewModel.loginWithGoogle(credential){
+                navController.navigate(navScreen.homePage.route){
+                    popUpTo(navScreen.loginPage.route){
+                        inclusive = true
+                    }
+                }
+            }
+        } catch (it: ApiException){
+            Toast.makeText(context, "$it", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -238,6 +259,14 @@ fun loginpage(
                     contentDescription = null,
                     modifier
                         .clickable {
+                            val googleLogin = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestEmail()
+                                .requestIdToken("73387465039-smfua58007gl077kno9tr54unc12h0uq.apps.googleusercontent.com")
+                                .build()
+
+                            @Suppress("DEPRECATION")
+                            val googleLoginClient = GoogleSignIn.getClient(context, googleLogin)
+                            launcher.launch(googleLoginClient.signInIntent)
                         }
                 )
                 Spacer(

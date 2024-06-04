@@ -11,12 +11,12 @@ import com.example.aqua_care.R
 
 class ReminderNotification(
     private val context : Context
-){
+) {
     private val notificationManager = context.getSystemService(NotificationManager::class.java)
 
     fun sendReminderNotification(
         title : String?
-    ){
+    ) {
         val notification = NotificationCompat.Builder(context, RMNDR_NOTI_CHNNL_ID)
             .setContentTitle(title)
             .setContentText(context.getString(R.string.app_name))

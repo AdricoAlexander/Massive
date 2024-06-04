@@ -1,10 +1,14 @@
 package com.example.aqua_care.ViewModel
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aqua_care.Firebase.AuthRepository
+import com.example.aqua_care.Firebase.LoginGoogleState
 import com.example.aqua_care.Firebase.LoginState
 import com.example.aqua_care.Firebase.Resource
+import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -17,6 +21,9 @@ class FirebaseViewModel @Inject constructor(
 ): ViewModel() {
     private val _state = Channel<LoginState>()
     val state = _state.receiveAsFlow()
+
+    private val _stateGoogle = mutableStateOf(LoginGoogleState())
+    val stateGoogle: State<LoginGoogleState> = _stateGoogle
 
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         viewModelScope.launch {
@@ -51,6 +58,24 @@ class FirebaseViewModel @Inject constructor(
                     is Resource.Success -> {
                         _state.send(LoginState(success = "Daftar Berhasil"))
                         home()
+                    }
+                }
+            }
+        }
+    }
+
+    fun loginWithGoogle(credential: AuthCredential, home: () -> Unit){
+        viewModelScope.launch {
+            repository.loginWithGoogle(credential).collect {result ->
+                when (result){
+                    is Resource.Error -> {
+                        _stateGoogle.value = LoginGoogleState(error = result.message)
+                    }
+                    is Resource.Loading -> {
+                        _stateGoogle.value = LoginGoogleState(loading = true)
+                    }
+                    is Resource.Success -> {
+                        _stateGoogle.value = LoginGoogleState(success = result.data)
                     }
                 }
             }
