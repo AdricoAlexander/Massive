@@ -53,19 +53,12 @@ import com.example.aqua_care.MainActivity
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun scanPage(
     modifier: Modifier = Modifier,
     navController: NavController,
     context : Context
 ){
-     val CAMERAX_PERMISSION = arrayOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.RECORD_AUDIO
-    )
-    val activity = context as? Activity
-    var hasRequiredPermission by remember { mutableStateOf(false) }
     var isClicked by remember { mutableStateOf(false) }
     Column(
         verticalArrangement = Arrangement.Top,

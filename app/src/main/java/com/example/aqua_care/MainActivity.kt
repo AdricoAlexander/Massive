@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
+import com.example.aqua_care.DataStore.AlarmRepository
 import com.example.aqua_care.DataStore.UserPreferences
 import com.example.aqua_care.Navigation.Navigation
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -28,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var userPreferences: UserPreferences
+    private val alarmRepository by lazy { AlarmRepository(this) }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @OptIn(ExperimentalPermissionsApi::class)
@@ -52,7 +54,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
             Navigation(
-                context = applicationContext
+                context = this,
+                alarmRepository = alarmRepository
             )
         }
     }

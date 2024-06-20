@@ -2,6 +2,7 @@ package com.example.aqua_care.Camera
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 fun PhotoBottomSheetContent(
     modifier: Modifier = Modifier,
     bitmaps : List<Bitmap>,
+    onItemClick : () -> Unit
 ){
     if (bitmaps.isEmpty()){
         Box(
@@ -46,6 +48,9 @@ fun PhotoBottomSheetContent(
                         .clip(
                             RoundedCornerShape(10.dp)
                         )
+                        .clickable {
+                            onItemClick()
+                        }
                 )
             }
         }

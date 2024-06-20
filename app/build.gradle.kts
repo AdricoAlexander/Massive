@@ -80,9 +80,11 @@ dependencies {
 
 
     //permission
+
     implementation(libs.accompanist.permissions)
 
     //Camera X
+
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
@@ -91,32 +93,62 @@ dependencies {
     implementation(libs.androidx.camera.extensions)
 
     //Data Store
+
     implementation(libs.androidx.datastore.preferences)
 
     //Room DB
+
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
     //ViewModel
+
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    // Lifecycle
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
     //Firebase
+
     implementation(libs.firebase.auth.ktx)
     implementation(libs.play.services.auth)
     implementation(libs.coil.compose)
 
     //Dagger - Hilt
+
     implementation(libs.hilt.android)
     ksp(libs.dagger.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+
+    // Permission
+
+    implementation(libs.accompanist.permissions)
+
+    // Google Maps
+
+
+    // Icon Extended
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
+
+    //accompanist
+    implementation("com.google.accompanist:accompanist-permissions:0.23.1")
+
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.12")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
 }

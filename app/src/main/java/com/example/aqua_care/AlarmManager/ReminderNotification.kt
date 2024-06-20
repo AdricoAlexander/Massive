@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import com.example.aqua_care.AlarmManager.NotificationKeys.RMNDR_NOTI_CHNNL_ID
-import com.example.aqua_care.AlarmManager.NotificationKeys.RMNDR_NOTI_ID
 import com.example.aqua_care.R
 
 class ReminderNotification(
@@ -15,7 +14,8 @@ class ReminderNotification(
     private val notificationManager = context.getSystemService(NotificationManager::class.java)
 
     fun sendReminderNotification(
-        title : String?
+        title : String?,
+        notificationId : Int
     ) {
         val notification = NotificationCompat.Builder(context, RMNDR_NOTI_CHNNL_ID)
             .setContentTitle(title)
@@ -34,7 +34,7 @@ class ReminderNotification(
             )
             .setAutoCancel(true)
             .build()
-        notificationManager.notify(RMNDR_NOTI_ID, notification)
+        notificationManager.notify(notificationId, notification)
     }
 
     private fun Context.bitmapFromResource(

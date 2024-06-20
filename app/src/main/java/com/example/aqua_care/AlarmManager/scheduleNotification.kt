@@ -17,14 +17,19 @@ fun scheduleNotification(
     context: Context,
     timePickerState: TimePickerState,
     datePickerState: DatePickerState,
-    title: String
+    title: String,
+    alarmId : Int
 ) {
+    val notificationId = alarmId
     val intent = Intent(context.applicationContext, ReminderReceiver::class.java).apply {
         putExtra(RMNDR_NOTI_TITLE_KEY, title)
+        putExtra("NOTIFICATION_ID",notificationId )
     }
+
+    val requestCode = notificationId
     val pendingIntent = PendingIntent.getBroadcast(
         context.applicationContext,
-        RMNDR_NOTI_ID,
+        requestCode,
         intent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
@@ -50,16 +55,16 @@ fun scheduleNotification(
     Toast.makeText(context, "Alarm successfully set", Toast.LENGTH_SHORT).show()
 }
 
-fun cancelNotification(context: Context) {
+fun cancelNotification(context: Context, notificationId: Int) {
     val intent = Intent(context.applicationContext, ReminderReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
         context.applicationContext,
-        RMNDR_NOTI_ID,
+        notificationId,
         intent,
         PendingIntent.FLAG_IMMUTABLE
     )
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     alarmManager.cancel(pendingIntent)
-    Toast.makeText(context, "Alarm successfully cancelled", Toast.LENGTH_SHORT).show()
+
 }

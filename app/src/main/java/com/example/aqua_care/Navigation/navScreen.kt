@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.aqua_care.Data.navbarComponents
+import com.example.aqua_care.DataStore.AlarmRepository
 import com.example.aqua_care.Screens.*
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
@@ -63,7 +64,8 @@ sealed class navScreen(val route: String) {
 @Composable
 fun Navigation(
     modifier: Modifier = Modifier,
-    context: Context
+    context: Context,
+    alarmRepository: AlarmRepository
 ){
 
     val navController = rememberNavController()
@@ -90,7 +92,7 @@ fun Navigation(
             startDestination = navScreen.Splash.route,
             modifier = Modifier.padding(contentPadding)
         ) {
-            composable(route = navScreen.Splash.route){
+            composable(route = navScreen.Splash.route) {
                 splashScreen(navController = navController)
             }
             composable(route = navScreen.signupPage.route) {
@@ -104,7 +106,7 @@ fun Navigation(
                 homePage(navController = navController)
             }
             composable(route = navScreen.jadwalPage.route) {
-                jadwalPage(navController = navController)
+                JadwalPage(navController = navController, alarmRepository = alarmRepository)
             }
             composable(route = navScreen.scanPage.route) {
                 scanPage(navController = navController, context = context)
@@ -127,43 +129,52 @@ fun Navigation(
             composable(route = navScreen.premiumCategory.route) {
                 premiumCategory(navController = navController)
             }
-            composable(route = navScreen.paymentDetail.route + "/{itemId}",
-                arguments = listOf(navArgument("itemId"){type = NavType.IntType})
-            ){navBackStackEntry ->
-                paymentDetail(paymentId = navBackStackEntry.arguments?.getInt("itemId"), navController = navController)
+            composable(
+                route = navScreen.paymentDetail.route + "/{itemId}",
+                arguments = listOf(navArgument("itemId") { type = NavType.IntType })
+            ) { navBackStackEntry ->
+                paymentDetail(
+                    paymentId = navBackStackEntry.arguments?.getInt("itemId"),
+                    navController = navController
+                )
             }
-            composable(route = navScreen.bayarFeedback.route){
+            composable(route = navScreen.bayarFeedback.route) {
                 bayarFeedback(navController = navController)
             }
-            composable(route = navScreen.detailModulowned.route){
+            composable(route = navScreen.detailModulowned.route) {
                 detailModulowned(navController = navController)
             }
-            composable(route = navScreen.detailmodulnotOwned.route){
+            composable(route = navScreen.detailmodulnotOwned.route) {
                 detailmodulnotOwned(navController = navController)
             }
-            composable(route = navScreen.landingPage_1.route){
+            composable(route = navScreen.landingPage_1.route) {
                 landingPage_1(navController = navController)
             }
-            composable(route = navScreen.landingPage_2.route){
+            composable(route = navScreen.landingPage_2.route) {
                 landingPage_2(navController = navController)
             }
-            composable(route = navScreen.landingPage_3.route){
+            composable(route = navScreen.landingPage_3.route) {
                 landingPage_3(navController = navController)
             }
-            composable(route = navScreen.profilEdit.route){
+            composable(route = navScreen.profilEdit.route) {
                 profileEdit(navController = navController)
             }
-            composable(route = navScreen.bantuanPage.route){
+            composable(route = navScreen.bantuanPage.route) {
                 bantuanPage(navController = navController)
             }
-            composable(route = navScreen.scanningResult.route){
-                scanningResult(navController = navController, context = context)
+            composable(route = navScreen.scanningResult.route) {
+                scanningResult(context = context, navController = navController)
             }
-            composable(route = navScreen.detailJadwal.route + "/{isFeedEnabled}",
-                arguments = listOf(navArgument("isFeedEnabled"){ type = NavType.BoolType})
-            ){navBackStackEntry ->
-                detailJadwal(navController = navController, isFeedEnabled = navBackStackEntry.arguments?.getBoolean("isFeedEnabled") ?:false)
+            composable(
+                route = navScreen.detailJadwal.route + "/{alarmId}",
+                arguments = listOf(navArgument("alarmId") { type = NavType.IntType })
+            ) { navBackStackEntry ->
+                AlarmConnector(
+                    alarmId = navBackStackEntry.arguments?.getInt("alarmId"),
+                    navController = navController,
+                    alarmRepository = alarmRepository
+                )
             }
+        }
     }
-}
 }

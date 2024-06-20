@@ -13,7 +13,8 @@ import androidx.core.content.ContextCompat
 fun takePhoto(
     controller : LifecycleCameraController,
     onPhotoTaken : (Bitmap) -> Unit,
-    context: Context
+    context: Context,
+    onCameraOff : () -> Unit
 ){
     controller.takePicture(
         ContextCompat.getMainExecutor(context),
@@ -34,6 +35,7 @@ fun takePhoto(
                     true
                 )
                 onPhotoTaken(rotatedBitmap)
+                onCameraOff()
             }
 
             override fun onError(exception: ImageCaptureException) {
