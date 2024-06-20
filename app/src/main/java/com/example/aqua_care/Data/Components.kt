@@ -1,6 +1,5 @@
 package com.example.aqua_care.Data
 
-import android.view.Window
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,53 +18,55 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.aqua_care.Navigation.navScreen
-import com.example.aqua_care.R
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.SheetState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.aqua_care.DataStore.UserPreferences
-import kotlinx.coroutines.coroutineScope
+import com.example.aqua_care.Navigation.navScreen
+import com.example.aqua_care.R
 import kotlinx.coroutines.launch
 
 val opensansregular = FontFamily(Font(R.font.opensansregular))
@@ -121,49 +122,80 @@ fun aquaButton(
     }
 }
 
+
 @Composable
 fun aquatextfield(
-    modifier: Modifier = Modifier,
-    label : String,
-    image : Painter,
-    width: Dp,
-    height: Dp,
-    imageSize : Dp,
-    font : FontFamily,
-    fontSize : TextUnit,
-    text : String,
-    onChange : (String) -> Unit,
+    label: String,
+    image: Painter? = null,
+    width: Dp = 260.dp,
+    height: Dp = 56.dp,
+    imageSize: Dp = 24.dp,
+    font: androidx.compose.ui.text.font.FontFamily,
+    fontSize: TextUnit,
+    text: String,
+    onChange: (String) -> Unit,
+    visualTransformation: androidx.compose.ui.text.input.VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    isPassword: Boolean = false
 ) {
 
-    OutlinedTextField(
-        modifier = modifier
-            .size(width, height),
-        value = text.toString(),
-        leadingIcon = {
-                      Image(
-                          painter = image,
-                          contentDescription = image.toString(),
-                          modifier = modifier
-                              .size(imageSize)
-                      )
-        },
-        label = {
-            Text(
-                text = label,
-                fontFamily = font,
-                fontSize = fontSize
-            )
-                },
-        placeholder = {
-            Text(
-                text = label,
-                fontFamily = font,
-                fontSize = fontSize
+    val (passwordVisible, setPasswordVisible) = remember { mutableStateOf(false) }
+
+    Column {
+        OutlinedTextField(
+            modifier = Modifier
+                .width(width)
+                .height(height),
+            value = text,
+            onValueChange = onChange,
+            label = {
+                Text(
+                    text = label,
+                    fontFamily = font,
+                    fontSize = fontSize
                 )
-                      },
-        onValueChange = onChange
-    )
+            },
+            leadingIcon = {
+                if (image != null) {
+                    Image(
+                        painter = image,
+                        contentDescription = null,
+                        modifier = Modifier.size(imageSize)
+                    )
+                }
+            },
+            placeholder = {
+                Text(
+                    text = label,
+                    fontFamily = font,
+                    fontSize = fontSize
+                )
+            },
+            visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+            keyboardOptions = keyboardOptions,
+            textStyle = TextStyle(fontFamily = font, fontSize = fontSize),
+            trailingIcon = {
+                if (isPassword) {
+                    IconButton(
+                        onClick = { setPasswordVisible(!passwordVisible) },
+                        modifier = Modifier.clickable(onClick = {
+                            setPasswordVisible(!passwordVisible)
+                        })
+                    ) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                } else {
+                    null
+                }
+            }
+        )
+    }
 }
+
+
 
 @Composable
 fun navbarComponents(
@@ -815,7 +847,7 @@ fun premiummoduleCard(
 
 
 
-){
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -836,7 +868,7 @@ fun premiummoduleCard(
             modifier = modifier
                 .fillMaxSize()
                 .padding(5.dp)
-        ){
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.locked),
                 contentDescription = null
@@ -848,13 +880,13 @@ fun premiummoduleCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp)
-        ){
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = modifier
                     .fillMaxHeight()
-            ){
+            ) {
                 Image(
                     painter = painterResource(id = image),
                     contentDescription = null,
@@ -865,7 +897,7 @@ fun premiummoduleCard(
                     text = text,
                     size = 6.sp,
                     fontFamily = opensansbold,
-                    onItemclicked = {  },
+                    onItemclicked = { },
                     color = Color(0xFF828282)
                 )
             }
@@ -875,12 +907,12 @@ fun premiummoduleCard(
                 modifier = modifier
                     .fillMaxSize()
 
-            ){
+            ) {
                 opensanstext(
                     text = title,
                     size = 10.sp,
                     fontFamily = opensansbold,
-                    onItemclicked = {  },
+                    onItemclicked = { },
                     color = Color(0xFF272727)
                 )
                 Row(
@@ -889,7 +921,7 @@ fun premiummoduleCard(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(start = 40.dp, top = 10.dp)
-                ){
+                ) {
                     Image(
                         painter = painterResource(id = profilepic),
                         contentDescription = null,
@@ -901,7 +933,7 @@ fun premiummoduleCard(
                         text = name,
                         size = 8.sp,
                         fontFamily = opensansbold,
-                        onItemclicked = {  },
+                        onItemclicked = { },
                         color = Color(0xFF737272)
                     )
 
@@ -910,7 +942,7 @@ fun premiummoduleCard(
                     text = description,
                     size = 8.sp,
                     fontFamily = opensansbold,
-                    onItemclicked = {  },
+                    onItemclicked = { },
                     color = Color(0xFF737272)
                 )
                 Row(
@@ -919,7 +951,7 @@ fun premiummoduleCard(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(start = 40.dp, top = 10.dp)
-                ){
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.premium_1),
                         contentDescription = null,
@@ -928,10 +960,10 @@ fun premiummoduleCard(
                             .padding(end = 5.dp),
                     )
                     opensanstext(
-                        text ="Premium",
+                        text = "Premium",
                         size = 11.sp,
                         fontFamily = opensansregular,
-                        onItemclicked = {  },
+                        onItemclicked = { },
                         color = Color(0xFF272727)
                     )
 
@@ -940,463 +972,475 @@ fun premiummoduleCard(
         }
     }
 }
+    @Composable
+    fun outlinetext(
+        modifier: Modifier = Modifier,
+        color: Color,
+        text: String,
+        textcolor: Color
 
+    ) {
 
-@Composable
-fun outlinetext(
-    modifier: Modifier = Modifier,
-    color : Color,
-    text: String,
-    textcolor : Color
-
-){
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .background(Color.White, RoundedCornerShape(10.dp))
-            .border(1.dp, color, RoundedCornerShape(10.dp))
-            .padding(8.dp)
-    ){
-        opensanstext(
-            text = text,
-            size = 12.sp,
-            fontFamily = opensansregular,
-            onItemclicked = {  },
-            color = textcolor,
-        )
-    }
-}
-
-
-
-
-@Composable
-fun paymentCard(
-    modifier: Modifier = Modifier,
-    premium: premium,
-    onItemclicked: (Int) -> Unit
-
-
-){
-    Card(
-        modifier = modifier
-            .size(362.dp, 273.dp)
-            .padding(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE2EDFD)),
-    ){
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top,
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = modifier
-                .fillMaxSize()
-                .padding(
-                    vertical = 20.dp,
-                    horizontal = 12.dp
-                )
-        ){
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(59.dp)
-            ){
-                Column(
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.Start,
-                    modifier = modifier
-                        .height(59.dp)
-                ){
-                    opensanstext(
-                        text = premium.title,
-                        size = 16.sp,
-                        fontFamily = opensanssemibold,
-                        onItemclicked = {  },
-                        color = Color(0xFF272727)
-                    )
-                    opensanstext(
-                        text = premium.price,
-                        size = 18.sp,
-                        fontFamily = opensansbold,
-                        onItemclicked = {  },
-                        color = Color(0xFF272727)
-                    )
-                }
-                Column(
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.Start,
-                    modifier = modifier
-                        .height(59.dp)
-                ){
-                    opensanstext(
-                        text = premium.length,
-                        size = 16.sp,
-                        fontFamily = opensansbold,
-                        onItemclicked = {  },
-                        color = Color(0xFF272727)
-                    )
-                    opensanstext(
-                        text = "Akses ke semua fitur",
-                        size = 13.sp,
-                        fontFamily = opensanssemibold,
-                        onItemclicked = {  },
-                        color = Color(0xFF272727)
-                    )
-                }
-            }
-            Spacer(modifier.height(30.dp)
+                .background(Color.White, RoundedCornerShape(10.dp))
+                .border(1.dp, color, RoundedCornerShape(10.dp))
+                .padding(8.dp)
+        ) {
+            opensanstext(
+                text = text,
+                size = 12.sp,
+                fontFamily = opensansregular,
+                onItemclicked = { },
+                color = textcolor,
             )
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Start
-            ){
-                Image(
-                    painter = painterResource(id = R.drawable.check_icon),
-                    contentDescription = null,
-                    modifier = modifier
-                        .size(20.dp)
-                )
-                Spacer(modifier.width(5.dp)
-                )
-                opensanstext(
-                    text = "Gratis Video Edukasi",
-                    size = 12.sp,
-                    fontFamily = opensanssemibold,
-                    onItemclicked = {},
-                    color = Color(0xFF272727)
-                )
-            }
-            Spacer(modifier.height(6.dp)
-            )
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Start
-            ){
-                Image(
-                    painter = painterResource(id = R.drawable.check_icon),
-                    contentDescription = null,
-                    modifier = modifier
-                        .size(20.dp)
-                )
-                Spacer(modifier.width(5.dp)
-                )
-                opensanstext(
-                    text = "Akses Aqua Scan",
-                    size = 12.sp,
-                    fontFamily = opensanssemibold,
-                    onItemclicked = {},
-                    color = Color(0xFF272727)
-                )
-            }
-            Spacer(modifier.height(6.dp)
-            )
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Start
-            ){
-                Image(
-                    painter = painterResource(id = R.drawable.check_icon),
-                    contentDescription = null,
-                    modifier = modifier
-                        .size(20.dp)
-                )
-                Spacer(modifier.width(5.dp)
-                )
-                opensanstext(
-                    text = "Akses AquaBot",
-                    size = 12.sp,
-                    fontFamily = opensanssemibold,
-                    onItemclicked = {},
-                    color = Color(0xFF272727)
-                )
-            }
-            Spacer(modifier.height(6.dp)
-            )
-            Box(
-                contentAlignment = Alignment.BottomCenter,
+        }
+    }
+
+
+    @Composable
+    fun paymentCard(
+        modifier: Modifier = Modifier,
+        premium: premium,
+        onItemclicked: (Int) -> Unit
+
+
+    ) {
+        Card(
+            modifier = modifier
+                .size(362.dp, 273.dp)
+                .padding(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFE2EDFD)),
+        ) {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top,
                 modifier = modifier
                     .fillMaxSize()
-            ){
-                aquaButton(
-                    color = Color(0xFF246DBB),
-                    width = 264.dp,
-                    height = 36.dp,
-                    text = "Mulai Berlangganan",
-                    fontFamily = opensansbold,
-                    textColor = Color.White
-                ){
-                    onItemclicked(premium.id)
+                    .padding(
+                        vertical = 20.dp,
+                        horizontal = 12.dp
+                    )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(59.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.SpaceAround,
+                        horizontalAlignment = Alignment.Start,
+                        modifier = modifier
+                            .height(59.dp)
+                    ) {
+                        opensanstext(
+                            text = premium.title,
+                            size = 16.sp,
+                            fontFamily = opensanssemibold,
+                            onItemclicked = { },
+                            color = Color(0xFF272727)
+                        )
+                        opensanstext(
+                            text = premium.price,
+                            size = 18.sp,
+                            fontFamily = opensansbold,
+                            onItemclicked = { },
+                            color = Color(0xFF272727)
+                        )
+                    }
+                    Column(
+                        verticalArrangement = Arrangement.SpaceAround,
+                        horizontalAlignment = Alignment.Start,
+                        modifier = modifier
+                            .height(59.dp)
+                    ) {
+                        opensanstext(
+                            text = premium.length,
+                            size = 16.sp,
+                            fontFamily = opensansbold,
+                            onItemclicked = { },
+                            color = Color(0xFF272727)
+                        )
+                        opensanstext(
+                            text = "Akses ke semua fitur",
+                            size = 13.sp,
+                            fontFamily = opensanssemibold,
+                            onItemclicked = { },
+                            color = Color(0xFF272727)
+                        )
+                    }
+                }
+                Spacer(
+                    modifier.height(30.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.check_icon),
+                        contentDescription = null,
+                        modifier = modifier
+                            .size(20.dp)
+                    )
+                    Spacer(
+                        modifier.width(5.dp)
+                    )
+                    opensanstext(
+                        text = "Gratis Video Edukasi",
+                        size = 12.sp,
+                        fontFamily = opensanssemibold,
+                        onItemclicked = {},
+                        color = Color(0xFF272727)
+                    )
+                }
+                Spacer(
+                    modifier.height(6.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.check_icon),
+                        contentDescription = null,
+                        modifier = modifier
+                            .size(20.dp)
+                    )
+                    Spacer(
+                        modifier.width(5.dp)
+                    )
+                    opensanstext(
+                        text = "Akses Aqua Scan",
+                        size = 12.sp,
+                        fontFamily = opensanssemibold,
+                        onItemclicked = {},
+                        color = Color(0xFF272727)
+                    )
+                }
+                Spacer(
+                    modifier.height(6.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.check_icon),
+                        contentDescription = null,
+                        modifier = modifier
+                            .size(20.dp)
+                    )
+                    Spacer(
+                        modifier.width(5.dp)
+                    )
+                    opensanstext(
+                        text = "Akses AquaBot",
+                        size = 12.sp,
+                        fontFamily = opensanssemibold,
+                        onItemclicked = {},
+                        color = Color(0xFF272727)
+                    )
+                }
+                Spacer(
+                    modifier.height(6.dp)
+                )
+                Box(
+                    contentAlignment = Alignment.BottomCenter,
+                    modifier = modifier
+                        .fillMaxSize()
+                ) {
+                    aquaButton(
+                        color = Color(0xFF246DBB),
+                        width = 264.dp,
+                        height = 36.dp,
+                        text = "Mulai Berlangganan",
+                        fontFamily = opensansbold,
+                        textColor = Color.White
+                    ) {
+                        onItemclicked(premium.id)
+                    }
                 }
             }
         }
     }
-}
 
 
-@Composable
-fun chatIcon(
-    modifier: Modifier = Modifier,
-    icon : Int = 0
-){
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .size(35.dp)
-            .background(Color(0xFF246DBB), RoundedCornerShape(50.dp))
-    ){
-        Image(
-            painter = painterResource(id = icon),
-            contentDescription = null,
+    @Composable
+    fun chatIcon(
+        modifier: Modifier = Modifier,
+        icon: Int = 0
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = modifier
-                .size(20.dp, 23.84.dp)
+                .size(35.dp)
+                .background(Color(0xFF246DBB), RoundedCornerShape(50.dp))
+        ) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                modifier = modifier
+                    .size(20.dp, 23.84.dp)
+            )
+        }
+    }
+
+    @Composable
+    fun chatLayout(
+        modifier: Modifier = Modifier,
+        sender: String,
+        text: String,
+        topStart: Dp,
+        topEnd: Dp
+
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier
+                .background(
+                    Color(0xFFA8DAF8),
+                    RoundedCornerShape(
+                        topStart = topStart,
+                        topEnd = topEnd,
+                        bottomStart = 11.dp,
+                        bottomEnd = 11.dp
+                    )
+                )
+                .padding(7.dp)
+                .fillMaxWidth(0.5f)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start,
+                modifier = modifier
+            ) {
+                opensanstext(
+                    text = sender,
+                    size = 12.sp,
+                    fontFamily = opensansbold,
+                    onItemclicked = { },
+                    color = Color(0xFF272727)
+                )
+                Spacer(
+                    modifier.height(3.dp)
+                )
+                opensanstext(
+                    text = text,
+                    size = 12.sp,
+                    fontFamily = opensansregular,
+                    onItemclicked = { },
+                    color = Color(0xFF272727)
+                )
+            }
+        }
+    }
+
+
+    @Composable
+    fun cardType(
+        modifier: Modifier = Modifier,
+        image: Painter,
+        text: String
+
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFE6EEF7)),
+            shape = RoundedCornerShape(10.dp),
+            border = BorderStroke(1.dp, Color(0xFFB2B2B2)),
+            modifier = modifier
+                .shadow(5.dp, RoundedCornerShape(10.dp))
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = modifier
+                    .padding(7.dp)
+            ) {
+                Image(
+                    painter = image,
+                    contentDescription = null,
+                    modifier = modifier
+                        .size(20.dp)
+                )
+                Spacer(modifier.width(3.dp))
+                opensanstext(
+                    text = text,
+                    size = 12.sp,
+                    fontFamily = opensansregular,
+                    onItemclicked = { },
+                    color = Color(0xFF246DBB)
+                )
+            }
+        }
+    }
+
+
+    @Composable
+    fun profileCard(
+        modifier: Modifier = Modifier,
+        onItemclicked: () -> Unit,
+        image: Painter,
+        text: String
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            shape = RoundedCornerShape(8.dp),
+            border = BorderStroke(1.dp, Color(0xFFACACAC)),
+            modifier = modifier
+                .size(288.dp, 43.dp)
+                .shadow(5.dp)
+                .clickable {
+                    onItemclicked()
+                }
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(13.dp)
+            ) {
+                Image(
+                    painter = image,
+                    contentDescription = null,
+                    modifier = modifier
+                        .size(18.dp)
+                )
+                Spacer(
+                    modifier.width(17.dp)
+                )
+                opensanstext(
+                    text = text,
+                    size = 14.sp,
+                    fontFamily = opensansregular,
+                    onItemclicked = { },
+                    color = Color(0xFF272727)
+                )
+            }
+        }
+    }
+
+
+    @Composable
+    fun datatext(
+        modifier: Modifier = Modifier,
+        value: String,
+        width: Dp,
+        height: Dp,
+    ) {
+        var text by remember { mutableStateOf(value) }
+        OutlinedTextField(
+            value = text,
+            onValueChange = { newValue ->
+                text = newValue
+            },
+            modifier = modifier
+                .size(width, height)
+                .border(1.dp, Color(0xFFD9D9D9), RoundedCornerShape(5.dp))
+                .background(Color.White, RoundedCornerShape(5.dp))
         )
     }
-}
 
-@Composable
-fun chatLayout(
-    modifier: Modifier = Modifier,
-    sender  : String,
-    text : String,
-    topStart : Dp,
-    topEnd : Dp
-
-){
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .background(
-                Color(0xFFA8DAF8),
-                RoundedCornerShape(
-                    topStart = topStart,
-                    topEnd = topEnd,
-                    bottomStart = 11.dp,
-                    bottomEnd = 11.dp
-                )
-            )
-            .padding(7.dp)
-            .fillMaxWidth(0.5f)
-    ){
-        Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start,
-            modifier = modifier
-        ){
-            opensanstext(
-                text = sender,
-                size = 12.sp,
-                fontFamily = opensansbold,
-                onItemclicked = {  },
-                color = Color(0xFF272727)
-            )
-            Spacer(modifier.height(3.dp)
-            )
-            opensanstext(
-                text = text,
-                size = 12.sp,
-                fontFamily = opensansregular,
-                onItemclicked = {  },
-                color = Color(0xFF272727)
-            )
-        }
-    }
-}
-
-
-@Composable
-fun cardType(
-    modifier: Modifier = Modifier,
-    image : Painter,
-    text : String
-
-){
-    Card(
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE6EEF7)),
-        shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp,  Color(0xFFB2B2B2)),
-        modifier = modifier
-            .shadow(5.dp, RoundedCornerShape(10.dp))
-    ){
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .padding(7.dp)
-        ){
-            Image(
-                painter = image,
-                contentDescription = null,
-                modifier = modifier
-                    .size(20.dp)
-            )
-            Spacer(modifier.width(3.dp))
-            opensanstext(
-                text = text,
-                size = 12.sp,
-                fontFamily = opensansregular,
-                onItemclicked = {  },
-                color = Color(0xFF246DBB)
-            )
-        }
-    }
-}
-
-
-@Composable
-fun profileCard(
-    modifier: Modifier = Modifier,
-    onItemclicked: () -> Unit,
-    image : Painter,
-    text : String
-){
-    Card(
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, Color(0xFFACACAC)),
-        modifier = modifier
-            .size(288.dp, 43.dp)
-            .shadow(5.dp)
-            .clickable {
-                onItemclicked()
-            }
-    ){
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = modifier
-                .fillMaxSize()
-                .padding(13.dp)
-        ){
-            Image(
-                painter = image,
-                contentDescription = null,
-                modifier = modifier
-                    .size(18.dp)
-            )
-            Spacer(modifier.width(17.dp)
-            )
-            opensanstext(
-                text = text,
-                size = 14.sp,
-                fontFamily = opensansregular,
-                onItemclicked = {  },
-                color = Color(0xFF272727)
-            )
-        }
-    }
-}
-
-
-@Composable
-fun datatext(
-    modifier: Modifier = Modifier,
-    value : String,
-    width : Dp,
-    height: Dp,
-){
-    var text by remember { mutableStateOf(value) }
-    OutlinedTextField(value = text,
-        onValueChange = {newValue ->
-                        text = newValue
-        },
-        modifier = modifier
-            .size(width, height)
-            .border(1.dp, Color(0xFFD9D9D9), RoundedCornerShape(5.dp))
-            .background(Color.White, RoundedCornerShape(5.dp))
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun myBottomSheet(
-    modifier: Modifier = Modifier,
-    isBottomSheetVisible : Boolean,
-    sheetState: SheetState,
-    onDismiss : () -> Unit,
-    navController: NavController,
-){
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val dataStore = UserPreferences(context)
-    if(isBottomSheetVisible){
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            sheetState = sheetState,
-            containerColor = Color.White,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            shape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp),
-            dragHandle = null,
-            scrimColor = Color.Black.copy(alpha = .5f),
-            windowInsets = WindowInsets(0,0,0,0)
-        ){
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .height(162.dp)
-            ){
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun myBottomSheet(
+        modifier: Modifier = Modifier,
+        isBottomSheetVisible: Boolean,
+        sheetState: SheetState,
+        onDismiss: () -> Unit,
+        navController: NavController,
+    ) {
+        val context = LocalContext.current
+        val coroutineScope = rememberCoroutineScope()
+        val dataStore = UserPreferences(context)
+        if (isBottomSheetVisible) {
+            ModalBottomSheet(
+                onDismissRequest = onDismiss,
+                sheetState = sheetState,
+                containerColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                shape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp),
+                dragHandle = null,
+                scrimColor = Color.Black.copy(alpha = .5f),
+                windowInsets = WindowInsets(0, 0, 0, 0)
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = modifier
                         .fillMaxWidth()
-                ){
-                    Image(
-                        painter = painterResource(id = R.drawable.topshotline),
-                        contentDescription = null,
-                        modifier
-                            .size(34.dp, 4.dp)
-                    )
-                    Spacer(modifier.height(32.dp)
-                    )
-                    opensanstext(
-                        text = "Apakah kamu yakin ingin keluar ?",
-                        size = 18.sp,
-                        fontFamily = opensansbold,
-                        onItemclicked = {  },
-                        color = Color(0xFF272727)
-                    )
-                    Spacer(modifier.height(24.dp)
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceAround,
+                        .padding(8.dp)
+                        .height(162.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = modifier
                             .fillMaxWidth()
-                    ){
-                        aquaButton(
-                            color = Color(0xFF246DBB),
-                            width = 91.dp,
-                            height = 33.dp,
-                            textColor = Color.White,
-                            text = "YA",
-                            fontFamily = opensansbold
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.topshotline),
+                            contentDescription = null,
+                            modifier
+                                .size(34.dp, 4.dp)
+                        )
+                        Spacer(
+                            modifier.height(32.dp)
+                        )
+                        opensanstext(
+                            text = "Apakah kamu yakin ingin keluar ?",
+                            size = 18.sp,
+                            fontFamily = opensansbold,
+                            onItemclicked = { },
+                            color = Color(0xFF272727)
+                        )
+                        Spacer(
+                            modifier.height(24.dp)
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = modifier
+                                .fillMaxWidth()
                         ) {
-                            coroutineScope.launch {
-                                dataStore.clearStatus()
-                            }
-                            navController.navigate(navScreen.loginPage.route){
-                                popUpTo(navScreen.Splash.route){
-                                    inclusive = true
+                            aquaButton(
+                                color = Color(0xFF246DBB),
+                                width = 91.dp,
+                                height = 33.dp,
+                                textColor = Color.White,
+                                text = "YA",
+                                fontFamily = opensansbold
+                            ) {
+                                coroutineScope.launch {
+                                    dataStore.clearStatus()
+                                }
+                                navController.navigate(navScreen.loginPage.route) {
+                                    popUpTo(navScreen.Splash.route) {
+                                        inclusive = true
+                                    }
                                 }
                             }
-                        }
-                        aquaButton(
-                            color = Color.White,
-                            width = 91.dp,
-                            height = 33.dp,
-                            textColor = Color(0xFF246DBB),
-                            text = "TIDAK",
-                            fontFamily = opensansbold
-                        ) {
-                            onDismiss()
+                            aquaButton(
+                                color = Color.White,
+                                width = 91.dp,
+                                height = 33.dp,
+                                textColor = Color(0xFF246DBB),
+                                text = "TIDAK",
+                                fontFamily = opensansbold
+                            ) {
+                                onDismiss()
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
+
+
+
+
 

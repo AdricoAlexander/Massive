@@ -1,10 +1,6 @@
 package com.example.aqua_care.Navigation
 
-import android.app.Activity.RESULT_OK
 import android.content.Context
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -17,10 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,9 +21,29 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.aqua_care.Data.navbarComponents
 import com.example.aqua_care.DataStore.AlarmRepository
-import com.example.aqua_care.Screens.*
-import com.google.android.gms.auth.api.identity.Identity
-import kotlinx.coroutines.launch
+import com.example.aqua_care.Screens.AlarmConnector
+import com.example.aqua_care.Screens.JadwalPage
+import com.example.aqua_care.Screens.aquaModul
+import com.example.aqua_care.Screens.bantuanPage
+import com.example.aqua_care.Screens.bayarFeedback
+import com.example.aqua_care.Screens.chatbotPage
+import com.example.aqua_care.Screens.detailBerita
+import com.example.aqua_care.Screens.detailModulowned
+import com.example.aqua_care.Screens.detailmodulnotOwned
+import com.example.aqua_care.Screens.homePage
+import com.example.aqua_care.Screens.landingPage_1
+import com.example.aqua_care.Screens.landingPage_2
+import com.example.aqua_care.Screens.landingPage_3
+import com.example.aqua_care.Screens.loginpage
+import com.example.aqua_care.Screens.notification
+import com.example.aqua_care.Screens.paymentDetail
+import com.example.aqua_care.Screens.premiumCategory
+import com.example.aqua_care.Screens.profileEdit
+import com.example.aqua_care.Screens.profilePage
+import com.example.aqua_care.Screens.signupPage
+import com.example.aqua_care.Screens.splashScreen
+import scanPage
+import scanningResult
 
 
 sealed class navScreen(val route: String) {

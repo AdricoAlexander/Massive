@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "73387465039",
+    "project_id": "aqua-care",
+    "storage_bucket": "aqua-care.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:73387465039:android:274ed9edd0630a3919cd3a",
+        "android_client_info": {
+          "package_name": "com.example.aqua_care"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "73387465039-bibv4v9ra4s01fnkj5rpaibathnjv321.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aqua_care",
+            "certificate_hash": "42e5a2dd977363f9b801f2d6e0e71d87df83fea1"
+          }
+        },
+        {
+          "client_id": "73387465039-smfua58007gl077kno9tr54unc12h0uq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9xV4yZ2SJjLTuZIiNi6tk0zxSGtx2lcQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "73387465039-smfua58007gl077kno9tr54unc12h0uq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:73387465039:android:164bcfce56642ca919cd3a",
+        "android_client_info": {
+          "package_name": "com.plcoding.composegooglesignincleanarchitecture"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "73387465039-smfua58007gl077kno9tr54unc12h0uq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9xV4yZ2SJjLTuZIiNi6tk0zxSGtx2lcQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "73387465039-smfua58007gl077kno9tr54unc12h0uq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
