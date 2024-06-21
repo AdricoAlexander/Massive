@@ -1,6 +1,5 @@
 package com.example.aqua_care.Screens
 
-import android.provider.ContactsContract.Data
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,12 +17,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +35,7 @@ import com.example.aqua_care.Data.opensansbold
 import com.example.aqua_care.Data.opensansregular
 import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.Data.profileCard
+import com.example.aqua_care.DataStore.SharedPreferencesManager
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
 import kotlinx.coroutines.launch
@@ -47,6 +49,10 @@ fun profilePage(
     val  scope = rememberCoroutineScope()
     var isBottomSheetVisible by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    val context = LocalContext.current
+    val sharedPreferencesManager = remember { SharedPreferencesManager(context) }
+    val name = sharedPreferencesManager.name ?: ""
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -85,14 +91,14 @@ fun profilePage(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         opensanstext(
-                            text = "Sugi",
+                            text = "User",
                             size = 18.sp,
                             fontFamily = opensansbold,
                             onItemclicked = {  },
                             color = Color.White
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.pak_sugi),
+                            painter = painterResource(id = R.drawable.icon_person),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(70.dp)
@@ -115,7 +121,7 @@ fun profilePage(
                                     .padding(10.dp)
                             )
                             opensanstext(
-                                text = "sugiii123@gmail.com",
+                                text = name,
                                 size = 11.sp,
                                 fontFamily = opensansregular,
                                 onItemclicked = {  },
@@ -133,7 +139,7 @@ fun profilePage(
                                     .padding(10.dp)
                             )
                             opensanstext(
-                                text = "081292292024",
+                                text = "089220651213",
                                 size = 11.sp,
                                 fontFamily = opensansregular,
                                 onItemclicked = {  },

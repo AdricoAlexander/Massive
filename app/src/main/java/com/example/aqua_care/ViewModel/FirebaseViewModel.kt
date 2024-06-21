@@ -1,6 +1,5 @@
 package com.example.aqua_care.ViewModel
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,7 +22,6 @@ class FirebaseViewModel @Inject constructor(
     val state = _state.receiveAsFlow()
 
     private val _stateGoogle = mutableStateOf(LoginGoogleState())
-    val stateGoogle: State<LoginGoogleState> = _stateGoogle
 
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         viewModelScope.launch {
@@ -76,6 +74,7 @@ class FirebaseViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         _stateGoogle.value = LoginGoogleState(success = result.data)
+                        home()
                     }
                 }
             }

@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,13 +24,12 @@ import com.example.aqua_care.Data.beritaData
 import com.example.aqua_care.Data.beritaLayout
 import com.example.aqua_care.Data.homeNavigator
 import com.example.aqua_care.Data.modulData
-import com.example.aqua_care.R
 import com.example.aqua_care.Data.modulLayout
 import com.example.aqua_care.Data.opensansextrabold
 import com.example.aqua_care.Data.opensanslight
 import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.Navigation.navScreen
-import com.google.firebase.Firebase
+import com.example.aqua_care.R
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -142,9 +138,11 @@ fun homePage(
             modifier.padding(16.dp)
         ) {
             items(
-                items = beritaData.beritaList,
+                items = beritaData.beritaList, key = {it.id},
                 itemContent = {
-                    beritaLayout(berita = it, navController = navController)
+                    beritaLayout(berita = it){ beritaId ->
+                        navController.navigate(navScreen.detailBerita.route + "/$beritaId")
+                    }
                 }
             )
         }

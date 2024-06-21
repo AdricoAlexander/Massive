@@ -483,10 +483,10 @@ fun homeNavigator(
 fun beritaLayout(
     modifier: Modifier = Modifier,
     berita: berita,
-    navController: NavController
+    onItemClicked: (Int) -> Unit
 ){
     Card(
-        onClick = { navController.navigate(navScreen.detailBerita.route)},
+        onClick = { onItemClicked(berita.id) },
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F6F6)),
         modifier = modifier
             .size(248.dp, 198.dp)

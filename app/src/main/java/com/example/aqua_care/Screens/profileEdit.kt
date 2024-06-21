@@ -1,6 +1,5 @@
 package com.example.aqua_care.Screens
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,11 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -25,6 +25,7 @@ import com.example.aqua_care.Data.aquaButton
 import com.example.aqua_care.Data.datatext
 import com.example.aqua_care.Data.opensansbold
 import com.example.aqua_care.Data.opensanstext
+import com.example.aqua_care.DataStore.SharedPreferencesManager
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
 
@@ -33,6 +34,9 @@ fun profileEdit(
     modifier: Modifier = Modifier,
     navController: NavController,
 ){
+    val context = LocalContext.current
+    val sharedPreferencesManager = remember { SharedPreferencesManager(context) }
+    val name = sharedPreferencesManager.name ?: ""
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
@@ -58,29 +62,6 @@ fun profileEdit(
             onItemclicked = {  },
             color = Color(0xFF272727)
         )
-        Spacer(modifier.height(30.dp)
-        )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = modifier
-                .fillMaxWidth()
-        ){
-            Image(
-                painter = painterResource(id = R.drawable.pak_sugi),
-                contentDescription = null,
-                modifier = modifier
-                    .size(58.dp)
-                    .padding(10.dp)
-            )
-            opensanstext(
-                text = "Pasang Foto Baru",
-                size = 18.sp,
-                fontFamily = opensansbold,
-                onItemclicked = {  },
-                color = Color(0xFF272727)
-            )
-        }
         Spacer(modifier.height(28.dp)
         )
         opensanstext(
@@ -93,7 +74,7 @@ fun profileEdit(
         Spacer(modifier.height(11.dp)
         )
         datatext(
-            value = "Sugiono",
+            value = "",
             width = 352.dp,
             height = 50.dp
         )
@@ -109,7 +90,7 @@ fun profileEdit(
         Spacer(modifier.height(11.dp)
         )
         datatext(
-            value = "Sugi",
+            value = "",
             width = 352.dp,
             height = 50.dp
         )
@@ -125,7 +106,7 @@ fun profileEdit(
         Spacer(modifier.height(11.dp)
         )
         datatext(
-            value = "Sugi123@gmail.com",
+            value = name,
             width = 352.dp,
             height = 50.dp
         )

@@ -26,8 +26,8 @@ import com.example.aqua_care.Screens.JadwalPage
 import com.example.aqua_care.Screens.aquaModul
 import com.example.aqua_care.Screens.bantuanPage
 import com.example.aqua_care.Screens.bayarFeedback
+import com.example.aqua_care.Screens.beritaConnect
 import com.example.aqua_care.Screens.chatbotPage
-import com.example.aqua_care.Screens.detailBerita
 import com.example.aqua_care.Screens.detailModulowned
 import com.example.aqua_care.Screens.detailmodulnotOwned
 import com.example.aqua_care.Screens.homePage
@@ -40,9 +40,9 @@ import com.example.aqua_care.Screens.paymentDetail
 import com.example.aqua_care.Screens.premiumCategory
 import com.example.aqua_care.Screens.profileEdit
 import com.example.aqua_care.Screens.profilePage
+import com.example.aqua_care.Screens.scanPage
 import com.example.aqua_care.Screens.signupPage
 import com.example.aqua_care.Screens.splashScreen
-import scanPage
 import scanningResult
 
 
@@ -135,8 +135,11 @@ fun Navigation(
             composable(route = navScreen.notification.route) {
                 notification(navController = navController)
             }
-            composable(route = navScreen.detailBerita.route) {
-                detailBerita(navController = navController)
+            composable(route = navScreen.detailBerita.route + "/{beritaId}",
+                arguments = listOf(navArgument("beritaId"){ type = NavType.IntType})
+            ) {
+                navBackStackEntry ->
+                beritaConnect(beritaId = navBackStackEntry.arguments?.getInt("beritaId"), navController = navController)
             }
             composable(route = navScreen.premiumCategory.route) {
                 premiumCategory(navController = navController)

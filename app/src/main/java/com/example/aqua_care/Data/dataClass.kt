@@ -21,7 +21,8 @@ data class berita(
     val title: String,
     val image : Int = 0,
     val date : String,
-    val website: String
+    val website: String,
+    val description : String
 )
 
 data class premium(

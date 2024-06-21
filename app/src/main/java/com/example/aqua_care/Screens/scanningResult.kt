@@ -2,7 +2,6 @@
 import android.content.Context
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
-import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
@@ -10,10 +9,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,11 +20,12 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,10 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.aqua_care.Camera.takePhoto
 import com.example.aqua_care.Data.opensansregular
+import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
 import com.example.aqua_care.ScanBot.utils.toFile
 import com.example.aqua_care.ViewModel.ClassificationViewModel
@@ -64,12 +64,12 @@ fun scanningResult(
     val controller = remember {
         LifecycleCameraController(context).apply {
             setEnabledUseCases(
-                CameraController.IMAGE_CAPTURE or
-                        CameraController.VIDEO_CAPTURE
+                LifecycleCameraController.IMAGE_CAPTURE or
+                        LifecycleCameraController.VIDEO_CAPTURE
             )
         }
     }
-    val state by classifyViewModel.state.collectAsStateWithLifecycle()
+    val state by classifyViewModel.state.collectAsState()
 
     Scaffold { paddingValues ->
         LaunchedEffect(key1 = state.error) {
@@ -88,7 +88,7 @@ fun scanningResult(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(350.dp)
+                        .size(450.dp)
                         .background(Color.White, RoundedCornerShape(16.dp))
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
@@ -137,21 +137,46 @@ fun scanningResult(
                 modifier = Modifier.fillMaxSize()
             )
 
-            IconButton(
-                onClick = {
-                    controller.cameraSelector =
-                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                            CameraSelector.DEFAULT_FRONT_CAMERA
-                        } else {
-                            CameraSelector.DEFAULT_BACK_CAMERA
-                        }
-                },
+            Row(
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .offset(16.dp, 16.dp)
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 20.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.cameraswitch),
-                    contentDescription = "Camera Switch"
+                OutlinedButton(
+                    onClick = {
+                        navController.navigate(navScreen.homePage.route)
+                    },
+                    modifier = Modifier.size(50.dp),
+                    contentPadding = PaddingValues(),
+                    content = {
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_backarrow),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                )
+
+                OutlinedButton(
+                    modifier = Modifier.size(45.dp),
+                    contentPadding = PaddingValues(),
+                    onClick = {
+                        controller.cameraSelector =
+                            if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                                CameraSelector.DEFAULT_FRONT_CAMERA
+                            } else {
+                                CameraSelector.DEFAULT_BACK_CAMERA
+                            }
+                    },
+                    content = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.camera_selector),
+                            contentDescription = "Camera Switch",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 )
             }
 
@@ -162,7 +187,7 @@ fun scanningResult(
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                IconButton(
+                OutlinedButton(
                     onClick = {
                         takePhoto(
                             controller = controller,
@@ -180,7 +205,8 @@ fun scanningResult(
                     }
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.button_scan),
+                        painter = painterResource(id = R.drawable.camera_icon),
+                        modifier = Modifier.size(45.dp),
                         contentDescription = "Take Photo"
                     )
                 }
@@ -205,4 +231,3 @@ fun cameraPreview(
         modifier = modifier
     )
 }
-
