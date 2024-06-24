@@ -503,14 +503,13 @@ fun beritaLayout(
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F6F6)),
         modifier = modifier
             .size(248.dp)
-            .padding(20.dp)
             .shadow(10.dp, RoundedCornerShape(10.dp))
     ){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp)
+                .padding(start = 20.dp, end = 20.dp)
         ){
             Image(
                 painter = painterResource(id = berita.image),
@@ -1436,7 +1435,6 @@ fun premiummoduleCard(
 fun ChatBotTextField(
     modifier: Modifier = Modifier,
     label: String,
-    image: Painter,
     width: Dp,
     height: Dp,
     imageSize: Dp,
@@ -1445,7 +1443,6 @@ fun ChatBotTextField(
     text: String,
     onChange: (String) -> Unit
 ) {
-    var innerText by remember { mutableStateOf(text) }
 
     Row(
         modifier = Modifier
@@ -1455,11 +1452,8 @@ fun ChatBotTextField(
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
-            value = innerText,
-            onValueChange = {
-                innerText = it
-                onChange(it)
-            },
+            value = text,
+            onValueChange = onChange,
             label = { Text(label) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -1468,11 +1462,6 @@ fun ChatBotTextField(
             textStyle = TextStyle(fontFamily = font, fontSize = fontSize),
             maxLines = Int.MAX_VALUE,
             singleLine = false
-        )
-        Image(
-            painter = image,
-            contentDescription = null,
-            modifier = Modifier.size(imageSize)
         )
     }
 }

@@ -135,7 +135,7 @@ fun homePage(
             )
         }
         LazyRow(
-            modifier.padding(10.dp)
+            modifier.padding(15.dp)
         ) {
             items(
                 items = beritaData.beritaList, key = {it.id},

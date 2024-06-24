@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ import com.example.aqua_care.DataStore.SharedPreferencesManager
 import com.example.aqua_care.R
 import com.example.aqua_care.ViewModel.ChatMessage
 import com.example.aqua_care.ViewModel.ChatViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun chatbotPage(modifier: Modifier = Modifier) {
@@ -50,6 +52,7 @@ fun chatbotPage(modifier: Modifier = Modifier) {
     val loading by chatViewModel.loading.collectAsState()
     val sharedPreferencesManager = remember { SharedPreferencesManager(context) }
     val name = sharedPreferencesManager.name ?: ""
+    val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = modifier
         .fillMaxSize()
@@ -80,7 +83,6 @@ fun chatbotPage(modifier: Modifier = Modifier) {
         ) {
            ChatBotTextField(
                label = "Masukan Kata Kunci",
-               image = painterResource(id = R.drawable.send_icon),
                width = 250.dp,
                height = 63.dp,
                imageSize = 18.dp,
@@ -94,13 +96,15 @@ fun chatbotPage(modifier: Modifier = Modifier) {
                 modifier = modifier
                     .size(50.dp)
                     .clip(CircleShape)
+                    .background(Color(0xFF246DBB))
                     .clickable {
-                        if (text.isNotBlank()) {
-                            chatViewModel.sendMessage(text)
-                            text = ""
+                        coroutineScope.launch {
+                            if (text.isNotBlank()) {
+                                chatViewModel.sendMessage(text)
+                                text = ""
+                            }
                         }
-                    }
-                    .background(Color(0xFF246DBB)),
+                    },
                 contentAlignment = Alignment.Center
             ){
                 Image(painter = painterResource(id = R.drawable.send_icon),
@@ -112,6 +116,8 @@ fun chatbotPage(modifier: Modifier = Modifier) {
         }
     }
 }
+
+
 @Composable
 fun chatBubble(
     modifier: Modifier = Modifier,
