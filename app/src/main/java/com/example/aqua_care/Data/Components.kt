@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -46,9 +48,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -81,7 +85,7 @@ fun opensanstext(
     text : String,
     size : TextUnit,
     fontFamily : FontFamily,
-    onItemclicked : (() -> Unit)? ,
+    onItemclicked : (() -> Unit)? = null,
     color : Color,
     modifier : Modifier = Modifier
 ){
@@ -202,7 +206,12 @@ fun navbarComponents(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
-    NavigationBar{
+    NavigationBar(
+        modifier
+            .height(65.dp)
+            .fillMaxWidth(),
+
+    ){
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         val navigationItems = listOf(
@@ -250,16 +259,20 @@ fun navbarComponents(
                     }
                 },
                 icon = {
-                    if (selected){
-                        Image(painter = item.selectedIcon,
+                    if (index != 2) {
+                        Image(
+                            painter = if (selected) item.selectedIcon else item.icon,
                             contentDescription = item.title,
+                            modifier = Modifier.size(25.dp)
                         )
-                    }else{
-                        Image(painter = item.icon,
+                    } else {
+                        Image(
+                            painter = if (selected) item.selectedIcon else item.icon,
                             contentDescription = item.title
                         )
                     }
-               }
+                },
+                colors = NavigationBarItemDefaults.colors(Color(0xFF246DBB))
             )
         }
     }
@@ -489,12 +502,11 @@ fun beritaLayout(
         onClick = { onItemClicked(berita.id) },
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F6F6)),
         modifier = modifier
-            .size(248.dp, 198.dp)
-            .padding(10.dp)
+            .size(248.dp)
+            .padding(20.dp)
             .shadow(10.dp, RoundedCornerShape(10.dp))
     ){
         Column(
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
@@ -502,14 +514,17 @@ fun beritaLayout(
         ){
             Image(
                 painter = painterResource(id = berita.image),
+                contentScale = ContentScale.Crop,
                 contentDescription = berita.title,
                 modifier = modifier
-                    .size(169.dp, 90.dp)
-                    .padding(bottom = 10.dp)
+                    .height(100.dp)
+                    .width(200.dp)
+                    .padding(bottom = 5.dp)
+                    .clip(RoundedCornerShape(5.dp))
             )
             opensanstext(
                 text = berita.title,
-                size = 10.sp,
+                size = 8.sp,
                 fontFamily = opensanssemibold,
                 onItemclicked = {  },
                 color = Color(0xFF111111)
@@ -522,7 +537,7 @@ fun beritaLayout(
             ){
                 opensanstext(
                     text = berita.date,
-                    size = 10.sp,
+                    size = 8.sp,
                     fontFamily = opensanssemibold,
                     onItemclicked = {  },
                     color = Color(0xFF969696)
@@ -972,32 +987,6 @@ fun premiummoduleCard(
         }
     }
 }
-    @Composable
-    fun outlinetext(
-        modifier: Modifier = Modifier,
-        color: Color,
-        text: String,
-        textcolor: Color
-
-    ) {
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = modifier
-                .background(Color.White, RoundedCornerShape(10.dp))
-                .border(1.dp, color, RoundedCornerShape(10.dp))
-                .padding(8.dp)
-        ) {
-            opensanstext(
-                text = text,
-                size = 12.sp,
-                fontFamily = opensansregular,
-                onItemclicked = { },
-                color = textcolor,
-            )
-        }
-    }
-
 
     @Composable
     fun paymentCard(
@@ -1434,13 +1423,56 @@ fun premiummoduleCard(
                                 onDismiss()
                             }
                         }
+                        Spacer(
+                            modifier.height(24.dp)
+                        )
                     }
                 }
             }
         }
     }
 
+@Composable
+fun ChatBotTextField(
+    modifier: Modifier = Modifier,
+    label: String,
+    image: Painter,
+    width: Dp,
+    height: Dp,
+    imageSize: Dp,
+    font: FontFamily,
+    fontSize: TextUnit,
+    text: String,
+    onChange: (String) -> Unit
+) {
+    var innerText by remember { mutableStateOf(text) }
 
-
-
-
+    Row(
+        modifier = Modifier
+            .width(width)
+            .height(height)
+            .background(Color.Transparent),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = innerText,
+            onValueChange = {
+                innerText = it
+                onChange(it)
+            },
+            label = { Text(label) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = height)
+                .weight(1f),
+            textStyle = TextStyle(fontFamily = font, fontSize = fontSize),
+            maxLines = Int.MAX_VALUE,
+            singleLine = false
+        )
+        Image(
+            painter = image,
+            contentDescription = null,
+            modifier = Modifier.size(imageSize)
+        )
+    }
+}

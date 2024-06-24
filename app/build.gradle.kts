@@ -151,4 +151,10 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    // Media Exoplayer
+    implementation(libs.androidx.media3.exoplayer)
+
+    // Media Video
+    implementation(libs.androidx.media3.ui)
+
 }

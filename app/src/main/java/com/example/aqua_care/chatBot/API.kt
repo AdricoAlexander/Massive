@@ -1,15 +1,14 @@
 package com.example.aqua_care.chatBot
 
 
+import com.example.aqua_care.chatBot.Model.ChatRequest
+import com.example.aqua_care.chatBot.Model.ChatResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 
-data class ChatRequest(val message: String)
-data class ChatResponse(val response: String)
-
 interface API {
-    @POST("chatbot")
+    @POST("chat")
     fun sendMessage(@Body request: ChatRequest): Call<ChatResponse>
 }

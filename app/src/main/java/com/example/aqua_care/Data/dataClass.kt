@@ -31,3 +31,31 @@ data class premium(
     val price: String,
     val length : String,
 )
+
+data class Modul(
+    val id : Int,
+    val title : String,
+    val video : List<Video>,
+    val image : Int = 0,
+    val description: String,
+    val videoamount : String,
+    val profilepic : Int = 0,
+    val writtername : String,
+)
+
+data class Video(
+    val id : Int,
+    val title : String,
+    val link : String
+)
+
+data class PremiumModul(
+    val id : Int,
+    val title : String,
+    val video : List<Video>,
+    val image : Int = 0,
+    val description: String,
+    val videoamount : String,
+    val profilepic : Int = 0,
+    val writtername : String,
+)

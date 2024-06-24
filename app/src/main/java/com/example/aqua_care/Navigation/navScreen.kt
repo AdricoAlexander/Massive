@@ -2,17 +2,11 @@ package com.example.aqua_care.Navigation
 
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,28 +15,28 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.aqua_care.Data.navbarComponents
 import com.example.aqua_care.DataStore.AlarmRepository
-import com.example.aqua_care.Screens.AlarmConnector
-import com.example.aqua_care.Screens.JadwalPage
-import com.example.aqua_care.Screens.aquaModul
-import com.example.aqua_care.Screens.bantuanPage
-import com.example.aqua_care.Screens.bayarFeedback
-import com.example.aqua_care.Screens.beritaConnect
-import com.example.aqua_care.Screens.chatbotPage
-import com.example.aqua_care.Screens.detailModulowned
-import com.example.aqua_care.Screens.detailmodulnotOwned
-import com.example.aqua_care.Screens.homePage
-import com.example.aqua_care.Screens.landingPage_1
-import com.example.aqua_care.Screens.landingPage_2
-import com.example.aqua_care.Screens.landingPage_3
-import com.example.aqua_care.Screens.loginpage
-import com.example.aqua_care.Screens.notification
-import com.example.aqua_care.Screens.paymentDetail
-import com.example.aqua_care.Screens.premiumCategory
-import com.example.aqua_care.Screens.profileEdit
-import com.example.aqua_care.Screens.profilePage
-import com.example.aqua_care.Screens.scanPage
-import com.example.aqua_care.Screens.signupPage
-import com.example.aqua_care.Screens.splashScreen
+import com.example.aqua_care.ui.Presentation.Jadwal.AlarmConnector
+import com.example.aqua_care.ui.Presentation.Jadwal.JadwalPage
+import com.example.aqua_care.ui.Presentation.Home.ModulConnect
+import com.example.aqua_care.ui.Presentation.Home.PremiumModulConnect
+import com.example.aqua_care.ui.Presentation.Home.aquaModul
+import com.example.aqua_care.ui.Presentation.Profile.bantuanPage
+import com.example.aqua_care.ui.Presentation.Payment.bayarFeedback
+import com.example.aqua_care.ui.Presentation.Home.beritaConnect
+import com.example.aqua_care.ui.Presentation.Chat.chatbotPage
+import com.example.aqua_care.ui.Presentation.Home.homePage
+import com.example.aqua_care.ui.Presentation.Onboarding.landingPage_1
+import com.example.aqua_care.ui.Presentation.Onboarding.landingPage_2
+import com.example.aqua_care.ui.Presentation.Onboarding.landingPage_3
+import com.example.aqua_care.ui.Presentation.Login.loginpage
+import com.example.aqua_care.ui.Presentation.Notification.notification
+import com.example.aqua_care.ui.Presentation.Payment.paymentDetail
+import com.example.aqua_care.ui.Presentation.Payment.premiumCategory
+import com.example.aqua_care.ui.Presentation.Profile.profileEdit
+import com.example.aqua_care.ui.Presentation.Profile.profilePage
+import com.example.aqua_care.ui.Presentation.Scan.scanPage
+import com.example.aqua_care.ui.Presentation.Register.signupPage
+import com.example.aqua_care.ui.Presentation.Splash.splashScreen
 import scanningResult
 
 
@@ -87,15 +81,7 @@ fun Navigation(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
             AnimatedVisibility(visible = currentRoute.BottomBar()){
-                Box(
-                    modifier
-                        .border(
-                            border = BorderStroke(1.5.dp, Color(0xFF246DBB)),
-                            shape = RoundedCornerShape(bottomEnd = 10.dp, bottomStart = 10.dp)
-                        )
-                ) {
-                    navbarComponents(navController = navController)
-                }
+                navbarComponents(navController = navController)
             }
         },
     ) { contentPadding ->
@@ -121,7 +107,7 @@ fun Navigation(
                 JadwalPage(navController = navController, alarmRepository = alarmRepository)
             }
             composable(route = navScreen.scanPage.route) {
-                scanPage(navController = navController, context = context)
+                scanPage(navController = navController)
             }
             composable(route = navScreen.chatbotPage.route) {
                 chatbotPage()
@@ -156,11 +142,21 @@ fun Navigation(
             composable(route = navScreen.bayarFeedback.route) {
                 bayarFeedback(navController = navController)
             }
-            composable(route = navScreen.detailModulowned.route) {
-                detailModulowned(navController = navController)
+            composable(route = navScreen.detailModulowned.route + "/{modulId}",
+                arguments = listOf(navArgument("modulId"){ type = NavType.IntType})
+            ) { navBackStackEntry ->
+                ModulConnect(
+                    modulId = navBackStackEntry.arguments?.getInt("modulId"),
+                    navController = navController
+                )
             }
-            composable(route = navScreen.detailmodulnotOwned.route) {
-                detailmodulnotOwned(navController = navController)
+            composable(route = navScreen.detailmodulnotOwned.route + "/{premModulId}",
+                arguments = listOf(navArgument("premModulId"){type = NavType.IntType})
+            ) { navBackStackEntry ->
+                PremiumModulConnect(
+                    premModulId = navBackStackEntry.arguments?.getInt("premModulId"),
+                    navController = navController
+                )
             }
             composable(route = navScreen.landingPage_1.route) {
                 landingPage_1(navController = navController)
