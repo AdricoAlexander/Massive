@@ -12,7 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.aqua_care.Data.aquaButton
 import com.example.aqua_care.Data.datatext
@@ -28,15 +34,24 @@ import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.DataStore.SharedPreferencesManager
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
+import com.example.aqua_care.ViewModel.FirebaseViewModel
 
 @Composable
 fun profileEdit(
     modifier: Modifier = Modifier,
     navController: NavController,
+    viewModel : FirebaseViewModel = hiltViewModel()
 ){
     val context = LocalContext.current
     val sharedPreferencesManager = remember { SharedPreferencesManager(context) }
-    val name = sharedPreferencesManager.name ?: ""
+    val state by viewModel.state.collectAsState(initial = null)
+    var newName by remember { mutableStateOf(sharedPreferencesManager.name ?: "") }
+
+    var editResult by remember { mutableStateOf<Boolean?>(null) }
+    
+    LaunchedEffect(newName) {
+        sharedPreferencesManager.name = newName
+    }
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
@@ -76,7 +91,8 @@ fun profileEdit(
         datatext(
             value = "",
             width = 352.dp,
-            height = 50.dp
+            height = 50.dp,
+            onChangeValue = {}
         )
         Spacer(modifier.height(11.dp)
         )
@@ -92,7 +108,8 @@ fun profileEdit(
         datatext(
             value = "",
             width = 352.dp,
-            height = 50.dp
+            height = 50.dp,
+            onChangeValue = {}
         )
         Spacer(modifier.height(11.dp)
         )
@@ -106,9 +123,12 @@ fun profileEdit(
         Spacer(modifier.height(11.dp)
         )
         datatext(
-            value = name,
+            value = newName,
             width = 352.dp,
-            height = 50.dp
+            height = 50.dp,
+            onChangeValue = {
+                newName = it
+            }
         )
         Spacer(modifier.height(11.dp)
         )
@@ -124,7 +144,8 @@ fun profileEdit(
         datatext(
             value = "089220651213",
             width = 352.dp,
-            height = 50.dp
+            height = 50.dp,
+            onChangeValue = {}
 
         )
         Spacer(modifier.height(11.dp)
@@ -141,7 +162,8 @@ fun profileEdit(
         datatext(
             value = "Bandung Barat Daya",
             width = 352.dp,
-            height = 50.dp
+            height = 50.dp,
+            onChangeValue = {}
 
         )
         Spacer(modifier.height(30.dp)
@@ -159,7 +181,7 @@ fun profileEdit(
                 textColor = Color.White,
                 text = "Simpan",
                 fontFamily = opensansbold
-            ){
+            ) {
                 navController.navigate(navScreen.profilePage.route)
             }
         }

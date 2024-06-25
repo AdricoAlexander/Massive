@@ -1,13 +1,11 @@
 package com.example.aqua_care.ViewModel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aqua_care.Firebase.AuthRepository
-import com.example.aqua_care.Firebase.LoginGoogleState
 import com.example.aqua_care.Firebase.LoginState
 import com.example.aqua_care.Firebase.Resource
-import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -18,10 +16,9 @@ import javax.inject.Inject
 class FirebaseViewModel @Inject constructor(
     private val repository: AuthRepository
 ): ViewModel() {
+    private val firebaseAuth = FirebaseAuth.getInstance()
     private val _state = Channel<LoginState>()
     val state = _state.receiveAsFlow()
-
-    private val _stateGoogle = mutableStateOf(LoginGoogleState())
 
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         viewModelScope.launch {
@@ -62,19 +59,20 @@ class FirebaseViewModel @Inject constructor(
         }
     }
 
-    fun loginWithGoogle(credential: AuthCredential, home: () -> Unit){
+    fun resetPassword(email: String, callback: (Boolean) -> Unit){
         viewModelScope.launch {
-            repository.loginWithGoogle(credential).collect {result ->
-                when (result){
+            repository.resetPassword(email).collect {
+                when (it){
                     is Resource.Error -> {
-                        _stateGoogle.value = LoginGoogleState(error = result.message)
+                        _state.send(LoginState(error = it.message))
+                        callback(false)
                     }
                     is Resource.Loading -> {
-                        _stateGoogle.value = LoginGoogleState(loading = true)
+                        _state.send(LoginState(loading = true))
                     }
                     is Resource.Success -> {
-                        _stateGoogle.value = LoginGoogleState(success = result.data)
-                        home()
+                        _state.send(LoginState(success = "Password reset email sent"))
+                        callback(true)
                     }
                 }
             }

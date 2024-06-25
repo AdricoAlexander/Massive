@@ -1,5 +1,6 @@
 package com.example.aqua_care.Navigation
 
+import BeritaViewModel
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
@@ -7,35 +8,36 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.aqua_care.Berita.Retrofit.BeritaRepository
 import com.example.aqua_care.Data.navbarComponents
 import com.example.aqua_care.DataStore.AlarmRepository
+import com.example.aqua_care.ViewModel.BeritaViewModelFactory
+import com.example.aqua_care.ui.Presentation.Chat.chatbotPage
+import com.example.aqua_care.ui.Presentation.Home.ModulConnect
+import com.example.aqua_care.ui.Presentation.Home.aquaModul
+import com.example.aqua_care.ui.Presentation.Home.homePage
 import com.example.aqua_care.ui.Presentation.Jadwal.AlarmConnector
 import com.example.aqua_care.ui.Presentation.Jadwal.JadwalPage
-import com.example.aqua_care.ui.Presentation.Home.ModulConnect
-import com.example.aqua_care.ui.Presentation.Home.PremiumModulConnect
-import com.example.aqua_care.ui.Presentation.Home.aquaModul
-import com.example.aqua_care.ui.Presentation.Profile.bantuanPage
-import com.example.aqua_care.ui.Presentation.Payment.bayarFeedback
-import com.example.aqua_care.ui.Presentation.Home.beritaConnect
-import com.example.aqua_care.ui.Presentation.Chat.chatbotPage
-import com.example.aqua_care.ui.Presentation.Home.homePage
+import com.example.aqua_care.ui.Presentation.Login.loginpage
+import com.example.aqua_care.ui.Presentation.Notification.notification
 import com.example.aqua_care.ui.Presentation.Onboarding.landingPage_1
 import com.example.aqua_care.ui.Presentation.Onboarding.landingPage_2
 import com.example.aqua_care.ui.Presentation.Onboarding.landingPage_3
-import com.example.aqua_care.ui.Presentation.Login.loginpage
-import com.example.aqua_care.ui.Presentation.Notification.notification
+import com.example.aqua_care.ui.Presentation.Payment.bayarFeedback
 import com.example.aqua_care.ui.Presentation.Payment.paymentDetail
 import com.example.aqua_care.ui.Presentation.Payment.premiumCategory
+import com.example.aqua_care.ui.Presentation.Profile.bantuanPage
 import com.example.aqua_care.ui.Presentation.Profile.profileEdit
 import com.example.aqua_care.ui.Presentation.Profile.profilePage
-import com.example.aqua_care.ui.Presentation.Scan.scanPage
 import com.example.aqua_care.ui.Presentation.Register.signupPage
+import com.example.aqua_care.ui.Presentation.Scan.scanPage
 import com.example.aqua_care.ui.Presentation.Splash.splashScreen
 import scanningResult
 
@@ -51,14 +53,12 @@ sealed class navScreen(val route: String) {
     object scanPage : navScreen("scanPage")
     object chatbotPage : navScreen("chatbotPage")
     object profilePage : navScreen("profilePage")
-    object detailBerita : navScreen("detailBerita")
     object notification : navScreen("notification")
     object aquaModul : navScreen("aquaModul")
     object premiumCategory : navScreen("premiumCategory")
     object paymentDetail : navScreen("paymentDetail")
     object bayarFeedback : navScreen("bayarFeedback")
     object detailModulowned : navScreen("detailModulowned")
-    object detailmodulnotOwned : navScreen("detailmodulnotOwned")
     object profilEdit : navScreen("profileEdit")
     object bantuanPage : navScreen("bantuanPage")
     object scanningResult : navScreen("scanningResult")
@@ -75,6 +75,12 @@ fun Navigation(
 ){
 
     val navController = rememberNavController()
+    val repository = BeritaRepository()
+    // Create ViewModel instance using the factory
+    val viewModel: BeritaViewModel = viewModel(
+        factory = BeritaViewModelFactory(repository)
+    )
+
 
     Scaffold(
         bottomBar = {
@@ -101,7 +107,7 @@ fun Navigation(
             }
 
             composable(route = navScreen.homePage.route) {
-                homePage(navController = navController)
+                homePage(navController = navController, viewModel = viewModel)
             }
             composable(route = navScreen.jadwalPage.route) {
                 JadwalPage(navController = navController, alarmRepository = alarmRepository)
@@ -120,12 +126,6 @@ fun Navigation(
             }
             composable(route = navScreen.notification.route) {
                 notification(navController = navController)
-            }
-            composable(route = navScreen.detailBerita.route + "/{beritaId}",
-                arguments = listOf(navArgument("beritaId"){ type = NavType.IntType})
-            ) {
-                navBackStackEntry ->
-                beritaConnect(beritaId = navBackStackEntry.arguments?.getInt("beritaId"), navController = navController)
             }
             composable(route = navScreen.premiumCategory.route) {
                 premiumCategory(navController = navController)
@@ -147,14 +147,6 @@ fun Navigation(
             ) { navBackStackEntry ->
                 ModulConnect(
                     modulId = navBackStackEntry.arguments?.getInt("modulId"),
-                    navController = navController
-                )
-            }
-            composable(route = navScreen.detailmodulnotOwned.route + "/{premModulId}",
-                arguments = listOf(navArgument("premModulId"){type = NavType.IntType})
-            ) { navBackStackEntry ->
-                PremiumModulConnect(
-                    premModulId = navBackStackEntry.arguments?.getInt("premModulId"),
                     navController = navController
                 )
             }

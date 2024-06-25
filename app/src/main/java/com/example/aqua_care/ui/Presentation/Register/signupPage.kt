@@ -135,26 +135,6 @@ fun signupPage(
                     modifier = modifier
                         .padding(20.dp)
                 ) {
-                    opensanstext(
-                        text = "Nama",
-                        size = 14.sp,
-                        fontFamily = opensansbold,
-                        color = Color(0xFF272727),
-                        onItemclicked = null
-                    )
-                    aquatextfield(
-                        label = "Masukkan Nama",
-                        image = painterResource(id = R.drawable.icon_person),
-                        width = 313.dp,
-                        height = 60.dp,
-                        imageSize = 16.81.dp,
-                        font = opensansregular,
-                        fontSize = 12.sp,
-                        text = name,
-                        onChange = {
-                            name = it
-                        }
-                    )
                     Spacer(
                         modifier.height(10.dp)
                     )
@@ -281,7 +261,6 @@ fun signupPage(
                                 viewModel.registerUser(email, password){
                                     Log.d("Berhasil", email)
                                 }
-                                name = ""
                                 email = ""
                                 password = ""
                                 confirmPassword = ""

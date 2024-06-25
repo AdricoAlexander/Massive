@@ -41,21 +41,20 @@ data class Modul(
     val videoamount : String,
     val profilepic : Int = 0,
     val writtername : String,
-)
+) {
+    fun matchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            "$title",
+            "$description",
+            "$writtername"
+        )
+        return matchingCombinations.any{it.contains(query, ignoreCase = true)}
+    }
+}
+
 
 data class Video(
     val id : Int,
     val title : String,
     val link : String
-)
-
-data class PremiumModul(
-    val id : Int,
-    val title : String,
-    val video : List<Video>,
-    val image : Int = 0,
-    val description: String,
-    val videoamount : String,
-    val profilepic : Int = 0,
-    val writtername : String,
 )

@@ -7,24 +7,30 @@ import com.example.aqua_care.DataStore.preferencesKey.PASSWORD_KEY
 
 class SharedPreferencesManager(context: Context) {
     private val preferences = context.getSharedPreferences(NAME_PREF, Context.MODE_PRIVATE)
-    private val editor = preferences.edit()
 
-    var name
+    var name: String?
         get() = preferences.getString(NAME_KEY, "")
         set(value) {
-            editor.putString(NAME_KEY, value)
-            editor.commit()
+            preferences.edit().apply {
+                putString(NAME_KEY, value)
+                apply()
+            }
         }
 
-    var password
+    var password: String?
         get() = preferences.getString(PASSWORD_KEY, "")
         set(value) {
-            editor.putString(PASSWORD_KEY, value)
-            editor.commit()
+            preferences.edit().apply {
+                putString(PASSWORD_KEY, value)
+                apply()
+            }
         }
 
     fun clear() {
-        editor.clear()
-        editor.commit()
+        preferences.edit().apply {
+            clear()
+            apply()
+        }
     }
+
 }

@@ -33,71 +33,6 @@ object modulData {
     )
 }
 
-object beritaData {
-    val beritaList = listOf(
-        berita(
-            id = 1,
-            title = "Menggunakan Kincir Air Paddle Wheel dalam Budidaya Ikan Air Tawar",
-            image = R.drawable.realberita_1,
-            date = "Kawasan Karawang, Jawa Barat, Rabu (8/5/2024)",
-            website = "Aqua Care Official",
-            description = "KBRN, Tolitoli: Potensi budidaya ikan air tawar di Kabupaten Tolitoli cukup besar jika dikelola dengan baik. Wakil Ketua DPRD Tolitoli, Jemmy Yusuf, kepada RRI mengatakan bahwa potensi ini harus dibarengi dengan arah kebijakan yang mampu mendukung kegiatan-kegiatan melalui program yang dirancang untuk meningkatkan produksi dan produktivitas ikan air tawar. Namun, hal tersebut belum terlihat secara signifikan dalam mendorong peningkatan budidaya ikan air tawar di Kabupaten Tolitoli.\n" +
-                    "\n" +
-                    "“Saya kira pemerintah daerah harus menjadi stimulator, dengan melakukan pembinaan dan pelatihan kepada para nelayan yang membudidayakan ikan air tawar di Kabupaten Tolitoli, agar mereka mempunyai pengetahuan tentang sistem budidaya perikanan air tawar yang baik,” ungkap Jemmy Yusuf saat dikonfirmasi oleh awak media RRI, Senin (03/04/2023).\n" +
-                    "\n" +
-                    "Lebih lanjut, Wakil Ketua DPRD Tolitoli ini menuturkan bahwa pemerintah daerah juga harus membuat terobosan untuk mencari potensi pasar, agar ikan air tawar memiliki nilai jual yang tinggi.\n" +
-                    "\n" +
-                    "Untuk itu, dirinya berharap balai benih ikan air tawar yang ada saat ini dapat dimanfaatkan secara maksimal melalui pengembangan dan peningkatan luas area pertambakan budidaya ikan air tawar di Kabupaten Tolitoli. Dengan demikian, produksi dan produktivitas ikan air tawar di Kabupaten Tolitoli dapat meningkat."
-
-        ),
-        berita(
-            id = 2,
-            title = "Potensi Budidaya Ikan Air Tawar Belum Tergali Secara Maksimal",
-            image = R.drawable.realberita_2,
-            date = "RRI, Senin (03/04/2023)",
-            website = "Aqua Care Official",
-            description = "Alvin menjelaskan, kolam bioflok dipilih karena praktis, fleksibel, dan peletakannya yang tidak perlu menggunakan lahan yang luas. \"Bioflok untuk pengelolaan lahannya sendiri lebih praktis dengan memanfaatkan media terpal. Untuk bioflok, hasil sisa pakannya itu bisa diolah lagi untuk pakan ikan itu sendiri,\" jelasnya. Selain kolam, relawan juga turut menyerahkan bibit nila untuk mendukung budidaya tersebut. Nila dipilih karena memiliki nilai ekonomis yang tinggi. \"Seperti kita tahu untuk nila itu perawatannya nggak terlalu ribet. Sangat gampang untuk merawat nila. Pengembangbiakannya juga cukup cepat. Secara nilai ekonomis, nila juga cukup stabil harganya,\" katanya. Diharapkan, bantuan ini bisa dijadikan pekerjaan sampingan untuk masyarakat setempat, sehingga bisa menambah penghasilan mereka. Ini juga menjadi cara bagi Crivisaya Ganjar untuk mengadukasi pera pemuda akan cara berwirausa budidaya ikan dengan memanfaatkan lahan yang minim.\n" +
-                    "\n" + "Relawan beranggotakan para mahasiswa ini pun berkomitmen untuk terus melanjutkan aksi bermanfaat di wilayah lainnya di Lampung. \"Rencana terdekat dari Crivisaya Lampung kita ada agenda di bidang kesehatan, yaitu untuk penanganan masalag stunting,\" pungkas Alvin.\n",
-
-
-        ),
-        berita(
-            id = 3,
-            title = "Tingkatkan Hasil Perikanan dengan Budidaya Kolam Ikan Air Tawar",
-            image = R.drawable.realberita_3,
-            date = "Rabu (19/06/24) di area branggang",
-            website = "Aqua Care Official",
-            description = "Budidaya kolam ikan air tawar dianggap dapat membantu peningkatan perekonomian masyarakat, mengingat peluang ekonominya cukup besar. Adapun ikan yang berpotensi di antaranya ikan nila, ikan patin, dan ikan mas. Besarnya peluang pasar terhadap penjualan ikan jenis ini membuat banyak pengelola perikanan mulai beramai-ramai menggarapnya. Antusiasme para pengelola perikanan ini membuat pemerintah melalui Dinas Pertanian, Pangan dan Perikanan siap memberikan subsidi penuh. Pihaknya berharap pembudidaya mampu memproduksi semaksimal mungkin.\n" +
-                    "\n" +
-                    "Sebelumnya, untuk memudahkan serta memajukan perikanan di KTT, beberapa waktu lalu Dinas Pertanian, Pangan dan Perikanan melakukan studi banding ke Banjarmasin, Kalimantan Selatan (Kalsel). Budidaya air tawar dengan sistem yang memanfaatkan lahan sekecil-kecilnya bisa berdampak besar dengan hasilnya.\n" +
-                    "\n" +
-                    "“Sebelumnya kita lakukan studi banding dengan melihat tata cara daerah yang sudah berhasil mengelola perikanan dengan baik, dengan harapan akan membuat prosentase keberhasilan pengelolaan kolam ikan air tawar di sini jauh lebih baik. Jadi kita tahu apa yang menjadi kendala, hambatan, ataupun yang menjadi kekurangan pengelola perikanan selama ini,” sebut Plt Kepala Dinas Pertanian, Pangan dan Perikanan, Sugeng Haryono, Selasa (22/10/2019).\n" +
-                    "\n" +
-                    "Saat ini hasil perikanan lebih dominan berasal dari pertambakan yang ada di Kecamatan Sesayap Hilir, Kecamatan Tana Lia, dan Kecamatan Betayau. Selama beberapa tahun belakangan ini, pertambakan mampu memenuhi kebutuhan konsumsi masyarakat akan hasil ikan laut, sedangkan pengelolaan ikan air tawar masih minim. Untuk meningkatkan hasil perikanan, pihaknya tidak segan-segan memberikan bantuan berupa bibit ikan dan fasilitas yang dibutuhkan.\n" +
-                    "\n" +
-                    "“Jika ini ditekuni pengelolaannya, secara tidak langsung akan meningkatkan perekonomian para pengelola perikanan ke depannya. Masyarakat sangat membutuhkan daging ikan, apalagi dengan melihat fungsi dan manfaat ikan bagi kehidupan, baik untuk kesehatan dan kecerdasan otak melalui omega-3, ikan wajib dikonsumsi masyarakat,” jelas Sugeng Haryono.\n" +
-                    "\n" +
-                    "Di KTT sendiri, rata-rata pengelola perikanan sudah membuka kolam ikan air tawar dengan ukuran 20 x 30 meter yang dominan diisi bibit ikan nila, ikan patin, dan ikan mas. Sejumlah pengelola perikanan sesekali memasarkannya di Pasar Induk Imbayud Taka."
-        ),
-        berita(
-            id = 4,
-            title = "Masa Pandemi, Pemuda Ini Sukses Kembangkan Budi Daya Ikan Air Tawar",
-            image = R.drawable.realberita_4,
-            date = " Kamis (8/10/2020)",
-            website = "Aqua Care Official",
-            description = "Adanya wabah virus Covid-19 sangat berdampak pada semua aspek kehidupan dalam masyarakat, terutama aspek ekonomi. Kondisi tersebut membuat salah satu pemuda di Palu, Rido, fokus mengembangkan budi daya ikan air tawar di rumahnya, Jalan Dewi Sartika Lorong 4, Petobo, Palu.\n" +
-                    "\n" +
-                    "Budi daya ikan air tawar mulai dari jenis nila, patin, gurame, ikan mas, dan lele mulai dikembangkan sejak tahun 2019. Pria kelahiran 1998 ini mengatakan bahwa budi daya ini ia rancang bersama keluarganya sebelum pandemi. Di Kota Palu, cukup berpotensi mengembangkan ikan air tawar karena kondisi alam yang mendukung.\n" +
-                    "\n" +
-                    "“Alhamdulillah cuaca di Palu sangat mendukung meskipun harus hati-hati dalam perawatan ikan sebab cuaca kadang berubah,” ujar Rido saat ditemui, Kamis (8/10/2020). Ia menjelaskan bahwa kolam ikan yang dirancang ada yang berupa tanah dan ada yang berupa semen. Jumlah kolam yang dimiliki sebanyak 11 kolam dengan rincian 6 kolam besar berupa tanah dan 5 kolam semen. Di masa pandemi ini, penjualan ikan masih dalam kondisi stabil dan berimbang namun ada beberapa kendala dalam perawatan ikan.\n" +
-                    "\n" +
-                    "“Karena tahun ini kondisi cuaca sering berubah membuat ikan banyak yang mati,” ungkapnya.\n" +
-                    "\n" +
-                    "Terkait penjualan ikan, kata Rido, itu sangat relatif, tergantung dari jenis ikan dan ukurannya. Saat ini ikan air tawar seperti lele memiliki harga 30.000 per kilogram di Kota Palu,” ucapnya."
-        ),
-    )
-}
-
 object premiumData {
     val premiumList =
         listOf(
@@ -147,27 +82,56 @@ object aquamodulData {
             videoamount = "2 Video",
             writtername = "Adrico Alexander",
             profilepic = R.drawable.alex_ganten
-        )
-    )
-
-    val premiumModulList = listOf(
-        PremiumModul(
-            id = 1,
-            title = "Cara memulai Usaha Ikan Segar Dari Nol !",
+        ),
+        Modul(
+            id = 2,
+            title = "Tata Cara Perawatan Ikan untuk Budidaya",
             video = listOf(
                 Video(
                     id = 1,
-                    title = "Usaha Ikan",
-                    link = "https://firebasestorage.googleapis.com/v0/b/aqua-care.appspot.com/o/coming%20soon.mp4?alt=media&token=9a3c9604-d561-468d-af2d-29e85aa0e705"
+                    title = "Cara Merawat Kolam Ikan Air Tawar",
+                    link = "https://firebasestorage.googleapis.com/v0/b/aqua-care.appspot.com/o/CARA%20MERAWAT%20AIR%20KOLAM%20LELE%20-%20MENJAGA%20KUALITAS%20AIR%20LELE.mp4?alt=media&token=c55ee801-dcf0-41d1-bcd0-89eb9b1b8a6b",
+                ),
+                Video(
+                    id = 2,
+                    title = "Cara Sukses Budidaya Pembenihan Lele",
+                    link = "https://firebasestorage.googleapis.com/v0/b/aqua-care.appspot.com/o/CARA%20SUKSES%20BUDIDAYA%20PEMBENIHAN%20LELE%20UNTUK%20PEMULA%20-%20PEMIJAHAN%20LELE%20ALAMI.mp4?alt=media&token=5064ca53-3ea5-4e2c-8980-a46cb2ecab78"
+                ),
+                Video(
+                    id = 3,
+                    title = "Sukses Atasi Benih Lele Mengagtung",
+                    link = "https://firebasestorage.googleapis.com/v0/b/aqua-care.appspot.com/o/SUKSES%20ATASI%20BENIH%20LELE%20MENGAGTUNG%20DENGAN%20CEPAT.mp4?alt=media&token=3d6dc427-2941-4598-b264-9a0810beefb5"
                 )
             ),
-            description = "Modul ini membantu para pembudidaya dalam menjual\n" +
-                    "\"ikan yang sudah dipanen agar tidak mengalami kerugian\n" +
-                    "\"ketika dijual.",
-            image = R.drawable.premiumimage_1,
-            videoamount = "1 Video",
-            writtername = "Sir Luthfy",
-            profilepic = R.drawable.upiw
+            description = "kolam lele, K sahabat kali ini saya akan memberikan cara merawat air kolam lele agar airnya sehat tetab hijau dan bebas dari bau\n" +
+                    "Naha untuk cara mengatasinya sendiri itu caranya sangat mudah yah jadi kalo mau air kolam lele kita tetap sehat bebas dari bau pertama jangan menebar bibit yang berlebihan 2 jangan memberi makan yang berlebihan 3 harus sering menguras air dasar kolam agar sisa sia pakan yang mengendap di dasar kolam itu hilang 4 setelah air kolam di kuras kita harus menambah probiotik untuk menetralkan airnya lagi ",
+            image = R.drawable.image_example_2,
+            videoamount = "3 Video",
+            writtername = "SIKUMIS",
+            profilepic = R.drawable.sikumis_foto
+        ),
+        Modul(
+            id = 3,
+            title = "Pengetahuan Dasar Pertambakan",
+            video = listOf(
+                Video(
+                    id = 1,
+                    title = "Cara Mencegah Penyakit Menyerang Ternak Nila",
+                    link = "https://firebasestorage.googleapis.com/v0/b/aqua-care.appspot.com/o/CARA%20MENCEGAH%20PENYAKIT%20MENYERANG%20TERNAK%20IKAN%20NILA.mp4?alt=media&token=4c6238db-d2e4-4b54-aef8-ef85f7845be6"
+                ),
+                Video(
+                    id = 2,
+                    title = "Penyebab Kegagalan Budidaya Ikan Nila Waspada",
+                    link = "https://firebasestorage.googleapis.com/v0/b/aqua-care.appspot.com/o/PENYEBAB%20KEGAGALAN%20BUDIDAYA%20IKAN%20NILA%20WASPADA%20BIBIT%20NILA%20MATI%20SETIAP%20HARI.mp4?alt=media&token=553a3e62-266c-4fc9-9021-cfa057e5a0a9"
+                )
+            ),
+            description = "membahas tentang berbagai macam teknik budidaya, pertanian, peternakan, perikanan serta tips dan trik jitu untuk mendapatkan ide bisnis dan peluang usaha.\n" +
+                    "\n" +
+                    "DISCLAIMER: Semua informasi, metode, tips dan trik yang disajikan belum tentu memberikan hasil yang sama karena ada banyak faktor yang mempengaruhi aktivitas budidaya, peternakan atau pertanian",
+            videoamount = "2 Video",
+            image = R.drawable.premiumimage_2,
+            writtername = "Hasil Daya",
+            profilepic = R.drawable.hasildaya_foto
         )
     )
 }

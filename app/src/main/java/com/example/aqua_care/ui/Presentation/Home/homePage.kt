@@ -1,5 +1,6 @@
 package com.example.aqua_care.ui.Presentation.Home
 
+import BeritaViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,25 +24,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.aqua_care.Berita.Model.Post
 import com.example.aqua_care.Data.MainTopBar
-import com.example.aqua_care.Data.beritaData
 import com.example.aqua_care.Data.beritaLayout
 import com.example.aqua_care.Data.homeNavigator
 import com.example.aqua_care.Data.modulData
 import com.example.aqua_care.Data.modulLayout
 import com.example.aqua_care.Data.opensansextrabold
-import com.example.aqua_care.Data.opensanslight
 import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
-import com.google.firebase.auth.FirebaseAuth
+
 
 @Composable
 fun homePage(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel : BeritaViewModel
 ) {
-    val currentUser = FirebaseAuth.getInstance().currentUser?.email?.substringBefore("@") ?: "N/A"
+
+    val loading by viewModel.loading.observeAsState(false)
+    val error by viewModel.error.observeAsState()
+    val news by viewModel.latestNews.observeAsState(emptyList())
+
     Column(
         modifier
             .fillMaxSize()
@@ -114,7 +123,7 @@ fun homePage(
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             modifier = modifier
                 .fillMaxWidth()
                 .padding(start = 30.dp, top = 10.dp, end = 30.dp, bottom = 10.dp)
@@ -126,25 +135,31 @@ fun homePage(
                 onItemclicked = { },
                 color = Color(0xFF272727)
             )
-            opensanstext(
-                text = "Lihat Semua",
-                size = 10.sp,
-                fontFamily = opensanslight,
-                onItemclicked = { },
-                color = Color(0xFF767676)
-            )
         }
-        LazyRow(
-            modifier.padding(15.dp)
-        ) {
-            items(
-                items = beritaData.beritaList, key = {it.id},
-                itemContent = {
-                    beritaLayout(berita = it){ beritaId ->
-                        navController.navigate(navScreen.detailBerita.route + "/$beritaId")
-                    }
+        if (loading){
+            CircularProgressIndicator()
+        } else {
+            Column {
+                error?.let { 
+                    Text(text = it)
                 }
-            )
+            }
+            NewsItem(news = news)
+        }
+    }
+}
+
+@Composable
+fun NewsItem(
+    modifier: Modifier = Modifier,
+    news : List<Post>
+) {
+    LazyRow(
+        modifier
+            .padding(10.dp)
+    ){
+        items(news) {
+            beritaLayout(post = it)
         }
     }
 }

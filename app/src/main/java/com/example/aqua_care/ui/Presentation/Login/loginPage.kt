@@ -1,10 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.aqua_care.ui.Presentation.Login
 
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,10 +45,6 @@ import com.example.aqua_care.DataStore.UserPreferences
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
 import com.example.aqua_care.ViewModel.FirebaseViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,23 +61,7 @@ fun loginpage(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-        val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-        try {
-            val result = account.getResult(ApiException::class.java)
-            val credential = GoogleAuthProvider.getCredential(result?.idToken, null)
-            viewModel.loginWithGoogle(credential) {
-                navController.navigate(navScreen.homePage.route) {
-                    popUpTo(navScreen.loginPage.route) {
-                        inclusive = true
-                    }
-                }
-            }
-        } catch (e: ApiException) {
-            Toast.makeText(context, "Google sign in failed: ${e.statusCode}", Toast.LENGTH_SHORT).show()
-        }
-    }
+    var showEmailDialog by remember { mutableStateOf(false) }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -200,7 +179,9 @@ fun loginpage(
                         text = "Lupa Password ?",
                         size = 10.sp,
                         fontFamily = opensansregular,
-                        onItemclicked = null,
+                        onItemclicked = {
+                            showEmailDialog = true
+                        },
                         color = Color(0xFF272727)
                     )
                 }
@@ -236,27 +217,7 @@ fun loginpage(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(10.dp))
-                opensanstext(
-                    text = "Atau Daftar Dengan",
-                    size = 10.sp,
-                    fontFamily = opensansregular,
-                    color = Color(0xFF272727),
-                    onItemclicked = null
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.icon_google),
-                    contentDescription = "Google Icon",
-                    modifier = Modifier.clickable {
-                        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestEmail()
-                            .requestIdToken("73387465039-smfua58007gl077kno9tr54unc12h0uq.apps.googleusercontent.com")
-                            .build()
-                        val googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
-                        launcher.launch(googleSignInClient.signInIntent)
-                    }
-                )
+
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -284,5 +245,21 @@ fun loginpage(
             }
         }
     }
+    if (showEmailDialog) {
+        EmailConfirmationDialog(
+            onDismiss = { showEmailDialog = false },
+            onVerify = { dialogEmail ->
+                coroutineScope.launch {
+                    viewModel.resetPassword(dialogEmail){
+                        if (it) {
+                            Toast.makeText(context, "Password reset email sent", Toast.LENGTH_SHORT).show()
+                            showEmailDialog = false
+                        } else {
+                            Toast.makeText(context, "Email not found", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        )
+    }
 }
-

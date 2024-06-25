@@ -29,10 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.aqua_care.Data.aquaButton
 import com.example.aqua_care.Data.myBottomSheet
 import com.example.aqua_care.Data.opensansbold
-import com.example.aqua_care.Data.opensansregular
 import com.example.aqua_care.Data.opensanstext
 import com.example.aqua_care.Data.profileCard
 import com.example.aqua_care.DataStore.SharedPreferencesManager
@@ -91,7 +89,7 @@ fun profilePage(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         opensanstext(
-                            text = "User",
+                            text = name,
                             size = 18.sp,
                             fontFamily = opensansbold,
                             onItemclicked = {  },
@@ -105,79 +103,10 @@ fun profilePage(
                                 .padding(10.dp)
                         )
                     }
-                    Column(
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.Start,
-
-                    ){
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            Image(
-                                painter = painterResource(id = R.drawable.email_icon),
-                                contentDescription = null,
-                                modifier = modifier
-                                    .size(29.dp)
-                                    .padding(10.dp)
-                            )
-                            opensanstext(
-                                text = name,
-                                size = 11.sp,
-                                fontFamily = opensansregular,
-                                onItemclicked = {  },
-                                color = Color.White
-                            )
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            Image(
-                                painter = painterResource(id = R.drawable.telephone_icon),
-                                contentDescription = null,
-                                modifier = modifier
-                                    .size(29.dp)
-                                    .padding(10.dp)
-                            )
-                            opensanstext(
-                                text = "089220651213",
-                                size = 11.sp,
-                                fontFamily = opensansregular,
-                                onItemclicked = {  },
-                                color = Color.White
-                            )
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            Image(
-                                painter = painterResource(id = R.drawable.marker_icon),
-                                contentDescription = null,
-                                modifier = modifier
-                                    .size(29.dp)
-                                    .padding(10.dp)
-                            )
-                            opensanstext(
-                                text = "Bandung Barat Daya",
-                                size = 11.sp,
-                                fontFamily = opensansregular,
-                                onItemclicked = {  },
-                                color = Color.White
-                            )
-                        }
-                    }
                 }
             }
         }
         Spacer(modifier.height(40.dp)
-        )
-        profileCard(
-            onItemclicked = {
-                            navController.navigate(navScreen.premiumCategory.route)
-            },
-            image = painterResource(id = R.drawable.premium_1),
-            text = "Premium"
-        )
-        Spacer(modifier.height(25.dp)
         )
         profileCard(
             onItemclicked = {
@@ -200,16 +129,6 @@ fun profilePage(
         )
         Spacer(modifier.height(144.dp)
         )
-        aquaButton(
-            color = Color(0xFF246DBB),
-            width = 169.dp,
-            height = 45.dp,
-            textColor = Color.White,
-            text = "Profile Settings",
-            fontFamily = opensansbold,
-        ){
-            navController.navigate(navScreen.profilEdit.route)
-        }
     }
     myBottomSheet(
         isBottomSheetVisible = isBottomSheetVisible,

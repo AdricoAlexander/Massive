@@ -1,5 +1,7 @@
 package com.example.aqua_care.Data
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,7 +50,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -68,6 +69,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import coil.compose.rememberAsyncImagePainter
+import com.example.aqua_care.Berita.Model.Post
+import com.example.aqua_care.DataStore.SharedPreferencesManager
 import com.example.aqua_care.DataStore.UserPreferences
 import com.example.aqua_care.Navigation.navScreen
 import com.example.aqua_care.R
@@ -351,23 +355,6 @@ fun MainTopBar(
                     .size(44.dp, 52.dp)
             )
         }
-        Box(
-            contentAlignment = Alignment.BottomEnd,
-            modifier = modifier
-                .fillMaxWidth()
-                .height(83.dp)
-        ){
-            Image(
-                painter = painterResource(id = R.drawable.icon_notification),
-                contentDescription = null,
-                modifier
-                    .size(44.dp, 52.dp)
-                    .offset(x = -15.dp)
-                    .clickable {
-                        navController.navigate(navScreen.notification.route)
-                    }
-            )
-        }
     }
 }
 
@@ -495,11 +482,14 @@ fun homeNavigator(
 @Composable
 fun beritaLayout(
     modifier: Modifier = Modifier,
-    berita: berita,
-    onItemClicked: (Int) -> Unit
+    post: Post,
 ){
+    val context = LocalContext.current
     Card(
-        onClick = { onItemClicked(berita.id) },
+        onClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.link))
+            context.startActivity(intent)
+        },
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F6F6)),
         modifier = modifier
             .size(248.dp)
@@ -511,18 +501,16 @@ fun beritaLayout(
                 .fillMaxSize()
                 .padding(start = 20.dp, end = 20.dp)
         ){
-            Image(
-                painter = painterResource(id = berita.image),
-                contentScale = ContentScale.Crop,
-                contentDescription = berita.title,
-                modifier = modifier
+            CoilImage(
+                data = post.thumbnail,
+                contentDescription = post.title,
+                modifier = Modifier
                     .height(100.dp)
-                    .width(200.dp)
-                    .padding(bottom = 5.dp)
-                    .clip(RoundedCornerShape(5.dp))
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
             )
             opensanstext(
-                text = berita.title,
+                text = post.title,
                 size = 8.sp,
                 fontFamily = opensanssemibold,
                 onItemclicked = {  },
@@ -535,7 +523,7 @@ fun beritaLayout(
                     .fillMaxWidth()
             ){
                 opensanstext(
-                    text = berita.date,
+                    text = post.pubDate,
                     size = 8.sp,
                     fontFamily = opensanssemibold,
                     onItemclicked = {  },
@@ -551,6 +539,22 @@ fun beritaLayout(
         }
     }
 }
+
+@Composable
+fun CoilImage(
+    data: String,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop
+) {
+    androidx.compose.foundation.Image(
+        painter = rememberAsyncImagePainter(data),
+        contentDescription = contentDescription,
+        modifier = modifier,
+        contentScale = contentScale
+    )
+}
+
 
 @Composable
 fun notif(
@@ -1317,15 +1321,14 @@ fun premiummoduleCard(
     fun datatext(
         modifier: Modifier = Modifier,
         value: String,
+        onChangeValue: (String) -> Unit,
         width: Dp,
         height: Dp,
     ) {
         var text by remember { mutableStateOf(value) }
         OutlinedTextField(
             value = text,
-            onValueChange = { newValue ->
-                text = newValue
-            },
+            onValueChange = onChangeValue,
             modifier = modifier
                 .size(width, height)
                 .border(1.dp, Color(0xFFD9D9D9), RoundedCornerShape(5.dp))
@@ -1344,6 +1347,7 @@ fun premiummoduleCard(
     ) {
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
+        val sharedPreferencesManager = remember { SharedPreferencesManager(context) }
         val dataStore = UserPreferences(context)
         if (isBottomSheetVisible) {
             ModalBottomSheet(
@@ -1404,6 +1408,7 @@ fun premiummoduleCard(
                             ) {
                                 coroutineScope.launch {
                                     dataStore.clearStatus()
+                                    sharedPreferencesManager.clear()
                                 }
                                 navController.navigate(navScreen.loginPage.route) {
                                     popUpTo(navScreen.Splash.route) {

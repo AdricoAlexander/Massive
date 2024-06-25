@@ -1,5 +1,7 @@
 package com.example.aqua_care.ui.Presentation.Profile
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,9 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.example.aqua_care.Data.opensansbold
 import com.example.aqua_care.Data.opensansregular
@@ -36,6 +40,11 @@ fun bantuanPage(
     modifier: Modifier = Modifier,
     navController: NavController
 ){
+
+    val context = LocalContext.current
+    val whatsappNumber = "081292292024"
+    val whatsappUrl = "https://wa.me/$whatsappNumber"
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -145,56 +154,15 @@ fun bantuanPage(
                         horizontalArrangement = Arrangement.Start,
                         modifier = modifier
                             .fillMaxWidth()
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    data = Uri.parse(whatsappUrl)
+                                }
+                                startActivity(context, intent, null)
+                            }
                     ){
                         Image(
                             painter = painterResource(id = R.drawable.whatsapp_icon),
-                            contentDescription = null,
-                            modifier
-                                .size(40.dp)
-                        )
-                        Spacer(modifier.width(15.dp)
-                        )
-                        opensanstext(
-                            text = "Hubungi customer service kami lewat akun WhatsApp Anda.",
-                            size = 12.sp,
-                            fontFamily = opensansregular,
-                            onItemclicked = {  },
-                            color = Color(0xFF272727)
-                        )
-                    }
-                }
-            }
-            Spacer(modifier.height(24.dp)
-            )
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(1.dp, Color(0xFFD9D9D9)),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                modifier = modifier
-                    .size(323.dp, 110.dp)
-            ){
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.Start,
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(start = 20.dp, end = 20.dp)
-                ){
-                    opensanstext(
-                        text = "Pusat Bantuan",
-                        size = 14.sp,
-                        fontFamily = opensansbold,
-                        onItemclicked = {  },
-                        color = Color(0xFF272727)
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = modifier
-                            .fillMaxWidth()
-                    ){
-                        Image(
-                            painter = painterResource(id = R.drawable.help_icon),
                             contentDescription = null,
                             modifier
                                 .size(40.dp)

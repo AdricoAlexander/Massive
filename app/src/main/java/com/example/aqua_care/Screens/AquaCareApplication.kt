@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.aqua_care.AlarmManager.NotificationKeys
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -13,6 +14,7 @@ class AquaCareApplication: Application() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
+        FirebaseApp.initializeApp(this)
         createNotificationChannel()
     }
     private fun createNotificationChannel() {
