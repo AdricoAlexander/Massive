@@ -6,24 +6,13 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Room
 import com.example.aqua_care.DataStore.AlarmRepository
 import com.example.aqua_care.DataStore.UserPreferences
 import com.example.aqua_care.Navigation.Navigation
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,27 +21,16 @@ class MainActivity : ComponentActivity() {
     private val alarmRepository by lazy { AlarmRepository(this) }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!hasRequiredPermission()) {
-            ActivityCompat.requestPermissions(this, CAMERAX_PERMISSION, REQUEST_CODE_PERMISSIONS)
-        }
-        if (!hasInternetPermission()) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.INTERNET), REQUEST_CODE_PERMISSIONS)
+        if (!hasRequiredPermissions()) {
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
         userPreferences = UserPreferences(applicationContext)
         installSplashScreen()
         setContent {
-            val postNotificationPermission =
-                rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-            LaunchedEffect(key1 = true) {
-                if (!postNotificationPermission.status.isGranted) {
-                    postNotificationPermission.launchPermissionRequest()
-                }
-            }
             Navigation(
                 context = this,
                 alarmRepository = alarmRepository
@@ -60,20 +38,21 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun hasRequiredPermission(): Boolean {
-        return CAMERAX_PERMISSION.all {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun hasRequiredPermissions(): Boolean {
+        return REQUIRED_PERMISSIONS.all {
             ContextCompat.checkSelfPermission(applicationContext, it) == PackageManager.PERMISSION_GRANTED
         }
     }
 
-    private fun hasInternetPermission() = ContextCompat.checkSelfPermission(
-        this, Manifest.permission.INTERNET
-    ) == PackageManager.PERMISSION_GRANTED
-
     companion object {
-        private val CAMERAX_PERMISSION = arrayOf(
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        private val REQUIRED_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.INTERNET,
+            Manifest.permission.SCHEDULE_EXACT_ALARM,
+            Manifest.permission.POST_NOTIFICATIONS
         )
         internal const val REQUEST_CODE_PERMISSIONS = 10
     }
